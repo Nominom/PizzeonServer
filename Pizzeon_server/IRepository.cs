@@ -8,6 +8,6 @@ namespace Pizzeon_server
     {
          Task AddPlayer (Player player);
          Task RemovePlayer (Guid Id);
-         Task <Player> GetPlayer(Guid Id); 
+         Task <Player> GetPlayer(Guid Id);
     }
 }
