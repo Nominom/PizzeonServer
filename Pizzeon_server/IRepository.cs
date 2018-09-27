@@ -11,5 +11,11 @@ namespace Pizzeon_server
         Task <Player> GetPlayer(Guid Id);
         Task<PlayerStats> GetStats(Guid playerid);
         Task AddStats(Guid playerid, SessionStats stats);
+        Task CreateHat(Hat hat);
+        Task RemoveHat(Guid Id);
+        Task CreateColor(Color color);
+        Task RemoveColor(Guid Id);
+        Task CreateAvatar(Avatar avatar);
+        Task RemoveAvatar(Guid Id);
     }
 }
