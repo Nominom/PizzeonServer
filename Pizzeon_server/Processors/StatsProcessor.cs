@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Pizzeon_server.Models;
 
 namespace Pizzeon_server.Processors
 {
@@ -14,14 +15,14 @@ namespace Pizzeon_server.Processors
             _repository = repository;
         }
 
-        public Task<Stat[]> GetStats(Guid playerid)
+        public Task<PlayerStats> GetStats(Guid playerid)
         {
             return _repository.GetStats(playerid);
         }
 
         public void AddStats(Guid playerid, SessionStats stats)
         {
-            return _repository.AddStats(playerid, stats);
+            _repository.AddStats(playerid, stats);
         }
     }
 }

@@ -7,13 +7,13 @@ namespace Pizzeon_server.Models {
 	public class Player {
 
 		public Guid Id { get; set; }
-		public Guid Password { get; set; }
-		public Guid Username { get; set; }
+		public string Password { get; set; }
+		public string Username { get; set; }
 		public Guid Avatar { get; set; }
 		public Guid Color { get; set; }
 		public Guid Hat { get; set; }
-		public Guid Coin { get; set; }
-		public Guid Pizzeria { get; set; }
-		public Guid Stats { get; set; }
+		public int Coin { get; set; }
+		public string Pizzeria { get; set; }
+		public PlayerStats Stats { get; set; }
 	}
 }

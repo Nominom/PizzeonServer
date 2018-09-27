@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Pizzeon_server.Models;
+using Pizzeon_server.Processors;
 
 namespace Pizzeon_server.Controllers
 {
@@ -17,7 +20,7 @@ namespace Pizzeon_server.Controllers
         }
         
         [HttpGet("{Id:Guid}")]
-        public Task<Stat[]> GetStats(Guid playerid)
+        public Task<PlayerStats> GetStats(Guid playerid)
         {
             return _processor.GetStats(playerid);
         }
