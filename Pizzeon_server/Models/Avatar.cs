@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace Pizzeon_server.Models {
 	public class Avatar : PurchaseableItem {
 		public Guid Id { get; set;}
-		public Guid Name { get; set;}
-		public Guid Price { get; set;}
+		public string Name { get; set;}
+		public int Price { get; set;}
 	}
 }
