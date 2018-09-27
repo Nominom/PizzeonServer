@@ -15,5 +15,6 @@ namespace Pizzeon_server.Models {
 		public int Coin { get; set; }
 		public string Pizzeria { get; set; }
 		public PlayerStats Stats { get; set; }
+		public DateTime CreationTime { get; set; }
 	}
 }
