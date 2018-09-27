@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace Pizzeon_server.Models {
 	public class Inventory {
-		Guid PlayerId;
-		public List <Color> OwnedColors;
-		public List <Hat> OwnedHats;
-		public List <Avatar> OwnedAvatars;
+		public Guid PlayerId { get; set; }
+		public List <Guid> OwnedColors;
+		public List <Guid> OwnedHats;
+		public List <Guid> OwnedAvatars;
 	}
 }

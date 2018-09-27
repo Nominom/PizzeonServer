@@ -17,5 +17,11 @@ namespace Pizzeon_server
         Task RemoveColor(Guid Id);
         Task CreateAvatar(Avatar avatar);
         Task RemoveAvatar(Guid Id);
+        Task CreateInventory (Inventory inventory);
+        Task RemoveInventory (Guid Id);
+        Task AddHatToInventory (Guid playerid, Guid hatid);
+        Task AddAvatarToInventory (Guid playerid, Guid avatarid);
+        Task AddColorToInventory (Guid playerid, Guid colorid);
+        Task<Inventory> GetInventory(Guid playerId);
     }
 }
