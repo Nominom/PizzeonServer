@@ -8,7 +8,7 @@ namespace Pizzeon_server
     {
         Task CreatePlayer (Player player);
         Task RemovePlayer (Guid Id);
-        Task <Player> GetPlayer(Guid Id);
+        Task<Player> GetPlayer(Guid Id);
         Task<PlayerStats> GetStats(Guid playerid);
         Task AddStats(Guid playerid, SessionStats stats);
         Task CreateHat(Hat hat);
@@ -22,6 +22,9 @@ namespace Pizzeon_server
         Task AddHatToInventory (Guid playerid, Guid hatid);
         Task AddAvatarToInventory (Guid playerid, Guid avatarid);
         Task AddColorToInventory (Guid playerid, Guid colorid);
-        Task<Inventory> GetInventory(Guid playerId);
+        Task<Inventory> GetInventory (Guid playerId);
+        Task<Hat> GetHat (Guid Id);
+        Task<Hat> GetAvatar (Guid Id); 
+        Task<Hat> GetColor (Guid Id); 
     }
 }
