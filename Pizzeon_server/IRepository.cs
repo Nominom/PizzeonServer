@@ -24,7 +24,8 @@ namespace Pizzeon_server
         Task AddColorToInventory (Guid playerid, Guid colorid);
         Task<Inventory> GetInventory (Guid playerId);
         Task<Hat> GetHat (Guid Id);
-        Task<Hat> GetAvatar (Guid Id); 
-        Task<Hat> GetColor (Guid Id); 
+        Task<Avatar> GetAvatar (Guid Id); 
+        Task<Color> GetColor (Guid Id);
+        Task DeductCoinFromPlayer(Guid playerId, int price);
     }
 }
