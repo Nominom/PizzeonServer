@@ -15,10 +15,15 @@ namespace Pizzeon_server.Processors
             _inventoryProcessor = inventoryProcessor;
         }
 
-        public void CreatePlayer (NewPlayer newPlayer) 
+        public bool CreatePlayer (NewPlayer newPlayer) 
         {
+            if (!_repository.CheckUsernameAvailable(newPlayer.Username).Result) {
+                return false;
+            }
+
             Player player = new Player();
             player.Username = newPlayer.Username;
+            player.Password = newPlayer.Password;
             player.Id = Guid.NewGuid();
             player.CreationTime = System.DateTime.Now;
             player.Hat = Guid.Empty;
@@ -30,6 +35,19 @@ namespace Pizzeon_server.Processors
             player.MultiStats = new PlayerStatsMulti();
             _repository.CreatePlayer(player);
             _inventoryProcessor.CreateInventory(player.Id);
+
+            return true;
+        }
+
+        public Guid Login(LoginCredentials credentials)
+        {
+            Player player = _repository.GetPlayerByName(credentials.Username).Result;
+            if (player.Password == credentials.Password) {
+                return player.Id;
+            } else {
+                return Guid.Empty;
+            }
+
         }
 
         public void DeletePlayer (Guid Id) 

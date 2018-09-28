@@ -102,6 +102,17 @@ namespace Pizzeon_server
             await PlayerCollection.UpdateOneAsync(filter, update);
         }
 
+        public async Task<bool> CheckUsernameAvailable(string username)
+        {
+            var filter = Builders<Player>.Filter.Eq("Username", username);
+            var cursor = await PlayerCollection.FindAsync(filter);
+            if (cursor.Any()) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+
         public Task CreateAvatar(Avatar avatar)
         {
             return AvatarCollection.InsertOneAsync(avatar);
@@ -182,6 +193,14 @@ namespace Pizzeon_server
             return player;
         }
 
+        public async Task<Player> GetPlayerByName(string username)
+        {
+            var filter = Builders<Player>.Filter.Eq("Username",username);
+            var cursor = await PlayerCollection.FindAsync(filter);
+            Player player = cursor.SingleOrDefault();
+            return player;
+        }
+
         public async Task<PlayerStatsSingle> GetSingleStats(Guid playerid)
         {
             var filter = Builders<Player>.Filter.Eq("Id", playerid);
@@ -210,7 +229,7 @@ namespace Pizzeon_server
 
         public async Task RemoveInventory(Guid Id)
         {
-            var filter = Builders<Inventory>.Filter.Eq("Id", Id);
+            var filter = Builders<Inventory>.Filter.Eq("PlayerId", Id);
             await InventoryCollection.DeleteOneAsync(filter);
         }
 

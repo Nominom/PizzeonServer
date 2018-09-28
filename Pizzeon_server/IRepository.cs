@@ -7,6 +7,7 @@ namespace Pizzeon_server
     public interface IRepository
     {
         Task CreatePlayer (Player player);
+        Task <bool> CheckUsernameAvailable(string username);
         Task RemovePlayer (Guid Id);
         Task<Player> GetPlayer(Guid Id);
         Task CreateHat(Hat hat);
@@ -29,5 +30,6 @@ namespace Pizzeon_server
         Task<Avatar> GetAvatar (Guid Id); 
         Task<Color> GetColor (Guid Id);
         Task DeductCoinFromPlayer(Guid playerId, int price);
+        Task <Player> GetPlayerByName(string username);
     }
 }
