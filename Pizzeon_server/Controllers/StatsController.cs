@@ -28,7 +28,7 @@ namespace Pizzeon_server.Controllers
         [HttpPost]
         public void AddStats(Guid playerid, SessionStats stats)
         {
-            
+            _processor.AddStats(playerid, stats);
         }
     }
 }
