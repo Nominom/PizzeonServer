@@ -19,16 +19,28 @@ namespace Pizzeon_server.Controllers
             _processor = processor;
         }
         
-        [HttpGet("{Id:Guid}")]
-        public Task<PlayerStats> GetStats(Guid playerid)
+        [HttpGet("single")]
+        public Task<PlayerStatsSingle> GetSingleStats(Guid playerid)
         {
-            return _processor.GetStats(playerid);
+            return _processor.GetSingleStats(playerid);
         }
 
-        [HttpPost]
-        public void AddStats(Guid playerid, SessionStats stats)
+        [HttpGet("multi")]
+        public Task<PlayerStatsMulti> GetMultiStats(Guid playerid)
         {
-            _processor.AddStats(playerid, stats);
+            return _processor.GetMultiStats(playerid);
+        }
+
+        [HttpPost("single")]
+        public void AddStatsSingle(Guid playerid, [FromBody]SessionStatsSingle stats)
+        {
+            _processor.AddStatsSingle(playerid, stats);
+        }
+
+        [HttpPost("multi")]
+        public void AddStatsMulti(Guid playerid, [FromBody]SessionStatsMulti stats)
+        {
+            _processor.AddStatsMulti(playerid, stats);
         }
     }
 }

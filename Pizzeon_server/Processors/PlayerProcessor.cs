@@ -26,7 +26,8 @@ namespace Pizzeon_server.Processors
             player.Avatar = Guid.Empty;
             player.Coin = 0;
             player.Pizzeria = player.Username + "'s Pizzeria";
-            player.Stats = new PlayerStats();
+            player.SingleStats = new PlayerStatsSingle();
+            player.MultiStats = new PlayerStatsMulti();
             _repository.CreatePlayer(player);
             _inventoryProcessor.CreateInventory(player.Id);
         }

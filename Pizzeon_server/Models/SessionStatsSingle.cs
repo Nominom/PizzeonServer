@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Pizzeon_server.Models {
-	public class PlayerStats {
-
-        public int PlayedGames { get; set; }
-        public float Accuracy { get; set; }
+namespace Pizzeon_server.Models
+{
+    public class SessionStatsSingle
+    {
+        public float PinpointAccuracy { get; set; }
         public float Distance { get; set; }
         public int Points { get; set; }
-        public float WinLoss { get; set; }
+        public float GameTime { get; set; }
         public int Hits { get; set; }
         public int Dropped { get; set; }
-	}
+    }
 }

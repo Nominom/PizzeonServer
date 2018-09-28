@@ -15,14 +15,24 @@ namespace Pizzeon_server.Processors
             _repository = repository;
         }
 
-        public Task<PlayerStats> GetStats(Guid playerid)
+        public Task<PlayerStatsSingle> GetSingleStats(Guid playerid)
         {
-            return _repository.GetStats(playerid);
+            return _repository.GetSingleStats(playerid);
         }
 
-        public void AddStats(Guid playerid, SessionStats stats)
+         public Task<PlayerStatsMulti> GetMultiStats(Guid playerid)
         {
-            _repository.AddStats(playerid, stats);
+            return _repository.GetMultiStats(playerid);
+        }
+
+        public void AddStatsSingle(Guid playerid, SessionStatsSingle stats)
+        {
+            _repository.AddStatsSingle(playerid, stats);
+        }
+
+        public void AddStatsMulti(Guid playerid, SessionStatsMulti stats)
+        {
+            _repository.AddStatsMulti(playerid, stats);
         }
     }
 }
