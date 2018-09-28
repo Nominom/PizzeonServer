@@ -1,0 +1,110 @@
+using System;
+using System.Threading.Tasks;
+using Pizzeon_server.Models;
+
+namespace Pizzeon_server.Processors
+{
+    public class StoreProcessor
+    {
+        private IRepository _repository;
+
+        private PlayerProcessor _playerProcessor;
+
+        private InventoryProcessor _inventoryProcessor;
+
+        public StoreProcessor (IRepository repository, PlayerProcessor playerProcessor, InventoryProcessor inventoryProcessor) {
+            _repository = repository;
+            _playerProcessor = playerProcessor;
+            _inventoryProcessor = inventoryProcessor;
+        }
+
+        public void CreateColor(NewColor newColor) {
+            Color color = new Color();
+            color.Name = newColor.Name;
+            color.Id = Guid.NewGuid();
+            color.Price = newColor.Price;
+            _repository.CreateColor(color);
+        }
+
+        public void CreateAvatar(NewAvatar newAvatar) {
+            Avatar avatar = new Avatar();
+            avatar.Name = newAvatar.Name;
+            avatar.Id = Guid.NewGuid();
+            avatar.Price = newAvatar.Price;
+            _repository.CreateAvatar(avatar);
+        }
+
+        public void CreateHat(NewHat newHat) {
+            Hat hat = new Hat();
+            hat.Name = newHat.Name;
+            hat.Id = Guid.NewGuid();
+            hat.Description = newHat.Description;
+            hat.Price = newHat.Price;
+            _repository.CreateHat(hat);
+
+        }
+
+        public Task<Hat> GetHat(Guid Id) {
+            return _repository.GetHat(Id);
+        }
+
+        public Task<Avatar> GetAvatar(Guid Id) {
+            return _repository.GetAvatar(Id);
+        }
+
+        public Task<Color> GetColor(Guid Id) {
+            return _repository.GetColor(Id);
+        }
+
+        public void BuyHat(Guid playerId, Guid hatId) {
+            Player player = _repository.GetPlayer(playerId).Result;
+            Hat hat = GetHat(hatId).Result;
+            if (player.Coin >= hat.Price) {
+                _playerProcessor.DeductCoin(playerId, hat.Price);
+                _inventoryProcessor.AddHatToInventory(playerId, hatId);
+            }
+            else {
+//      TODO: Show error message
+                return;                
+            }
+        }
+
+        public void BuyAvatar(Guid playerId, Guid avatarId) {
+            Player player = _repository.GetPlayer(playerId).Result;
+            Avatar avatar = GetAvatar(avatarId).Result;
+            if (player.Coin >= avatar.Price) {
+                _playerProcessor.DeductCoin(playerId, avatar.Price);
+                _inventoryProcessor.AddAvatarToInventory(playerId, avatarId);
+            }
+            else {
+//      TODO: Show error message
+                return;                
+            }
+        }
+
+        public void BuyColor(Guid playerId, Guid colorId) {
+            Player player = _repository.GetPlayer(playerId).Result;
+            Color color = GetColor(colorId).Result;
+            if (player.Coin >= color.Price) {
+                _playerProcessor.DeductCoin(playerId, color.Price);
+                _inventoryProcessor.AddColorToInventory(playerId, colorId);
+            }
+            else {
+//      TODO: Show error message
+                return;                
+            }
+        }
+
+        public void DeleteColor(Guid Id) {
+            _repository.RemoveColor(Id);
+        }
+
+        public void DeleteAvatar(Guid Id) {
+            _repository.RemoveAvatar(Id);
+        }
+
+        public void DeleteHat(Guid Id) {
+            _repository.RemoveHat(Id);
+        }
+    }
+}
