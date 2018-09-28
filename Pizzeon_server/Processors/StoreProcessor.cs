@@ -59,7 +59,7 @@ namespace Pizzeon_server.Processors
         public void BuyHat(Guid playerId, Guid hatId) {
             Player player = _repository.GetPlayer(playerId).Result;
             Hat hat = GetHat(hatId).Result;
-            if (player.Coin >= hat.Price) {
+            if (player.Money >= hat.Price) {
                 _playerProcessor.DeductCoin(playerId, hat.Price);
                 _inventoryProcessor.AddHatToInventory(playerId, hatId);
             }
@@ -72,7 +72,7 @@ namespace Pizzeon_server.Processors
         public void BuyAvatar(Guid playerId, Guid avatarId) {
             Player player = _repository.GetPlayer(playerId).Result;
             Avatar avatar = GetAvatar(avatarId).Result;
-            if (player.Coin >= avatar.Price) {
+            if (player.Money >= avatar.Price) {
                 _playerProcessor.DeductCoin(playerId, avatar.Price);
                 _inventoryProcessor.AddAvatarToInventory(playerId, avatarId);
             }
@@ -85,7 +85,7 @@ namespace Pizzeon_server.Processors
         public void BuyColor(Guid playerId, Guid colorId) {
             Player player = _repository.GetPlayer(playerId).Result;
             Color color = GetColor(colorId).Result;
-            if (player.Coin >= color.Price) {
+            if (player.Money >= color.Price) {
                 _playerProcessor.DeductCoin(playerId, color.Price);
                 _inventoryProcessor.AddColorToInventory(playerId, colorId);
             }

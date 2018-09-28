@@ -24,7 +24,7 @@ namespace Pizzeon_server.Processors
             player.Hat = Guid.Empty;
             player.Color = Guid.Empty;
             player.Avatar = Guid.Empty;
-            player.Coin = 0;
+            player.Money = 0;
             player.Pizzeria = player.Username + "'s Pizzeria";
             player.SingleStats = new PlayerStatsSingle();
             player.MultiStats = new PlayerStatsMulti();

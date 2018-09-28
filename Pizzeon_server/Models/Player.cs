@@ -12,7 +12,7 @@ namespace Pizzeon_server.Models {
 		public Guid Avatar { get; set; }
 		public Guid Color { get; set; }
 		public Guid Hat { get; set; }
-		public int Coin { get; set; }
+		public int Money { get; set; }
 		public string Pizzeria { get; set; }
 		public PlayerStatsSingle SingleStats { get; set; }
 		public PlayerStatsMulti MultiStats { get; set; }

@@ -28,29 +28,78 @@ namespace Pizzeon_server
             
         }
 
-        public Task AddAvatarToInventory(Guid playerid, Guid avatarid)
+        public async Task AddAvatarToInventory(Guid playerid, Guid avatarid)
         {
-            throw new NotImplementedException();
+            var filter = Builders<Inventory>.Filter.Eq("PlayerId", playerid);
+            var update = Builders<Inventory>.Update.AddToSet("OwnedAvatars", avatarid);
+            await InventoryCollection.UpdateOneAsync(filter, update);
         }
 
-        public Task AddColorToInventory(Guid playerid, Guid colorid)
+        public async Task AddColorToInventory(Guid playerid, Guid colorid)
         {
-            throw new NotImplementedException();
+            var filter = Builders<Inventory>.Filter.Eq("PlayerId", playerid);
+            var update = Builders<Inventory>.Update.AddToSet("OwnedColors", colorid);
+            await InventoryCollection.UpdateOneAsync(filter, update);
         }
 
-        public Task AddHatToInventory(Guid playerid, Guid hatid)
+        public async Task AddHatToInventory(Guid playerid, Guid hatid)
         {
-            throw new NotImplementedException();
+            var filter = Builders<Inventory>.Filter.Eq("PlayerId", playerid);
+            var update = Builders<Inventory>.Update.AddToSet("OwnedHats", hatid);
+            await InventoryCollection.UpdateOneAsync(filter, update);
         }
 
-        public Task AddStatsMulti(Guid playerid, SessionStatsMulti stats)
+        public async Task AddStatsMulti(Guid playerid, SessionStatsMulti stats)
         {
-            throw new NotImplementedException();
+            var filter = Builders<Player>.Filter.Eq("Id", playerid);
+            var cursor = await PlayerCollection.FindAsync(filter);
+            Player player = cursor.Single();
+            PlayerStatsMulti multiStats = player.MultiStats;
+            multiStats.PlayedGames++;
+            multiStats.AllPoints+=stats.Points;
+            multiStats.Distance+=stats.Distance;
+            multiStats.Dropped+=stats.Dropped;
+            multiStats.Hits+=stats.Hits;
+            if (stats.Win) 
+            {
+                multiStats.Win++;
+            } else {
+                multiStats.Loss++;
+            }
+            multiStats.PinpointAccuracy+=stats.PinpointAccuracy;
+            multiStats.OverallGameTime+=stats.GameTime;
+            if (stats.Points > multiStats.BestPoints) 
+            {
+                multiStats.BestPoints = stats.Points;
+            }
+            var update = Builders<Player>.Update.Set("MultiStats", multiStats);
+            await PlayerCollection.UpdateOneAsync(filter, update);
+            
         }
 
-        public Task AddStatsSingle(Guid playerid, SessionStatsSingle stats)
+        public async Task AddStatsSingle(Guid playerid, SessionStatsSingle stats)
         {
-            throw new NotImplementedException();
+            var filter = Builders<Player>.Filter.Eq("Id", playerid);
+            var cursor = await PlayerCollection.FindAsync(filter);
+            Player player = cursor.Single();
+            PlayerStatsSingle singleStats = player.SingleStats;
+            singleStats.PlayedGames++;
+            singleStats.AllPoints+=stats.Points;
+            singleStats.Distance+=stats.Distance;
+            singleStats.Dropped+=stats.Dropped;
+            singleStats.Hits+=stats.Hits;
+            singleStats.PinpointAccuracy+=stats.PinpointAccuracy;
+            singleStats.OverallGameTime+=stats.GameTime;
+            if (stats.GameTime > singleStats.BestGameTime) 
+            {
+                singleStats.BestGameTime = stats.GameTime;
+            }
+            if (stats.Points > singleStats.BestPoints) 
+            {
+                singleStats.BestPoints = stats.Points;
+            }
+            var update = Builders<Player>.Update.Set("SingleStats", singleStats);
+            await PlayerCollection.UpdateOneAsync(filter, update);
         }
 
         public Task CreateAvatar(Avatar avatar)
@@ -78,9 +127,11 @@ namespace Pizzeon_server
             return PlayerCollection.InsertOneAsync(player);
         }
 
-        public Task DeductCoinFromPlayer(Guid playerId, int price)
+        public async Task DeductCoinFromPlayer(Guid playerId, int price)
         {
-            throw new NotImplementedException();
+            var filter = Builders<Player>.Filter.Eq("Id", playerId);
+            var update = Builders<Player>.Update.Inc("Money", - price);
+            await PlayerCollection.UpdateOneAsync(filter, update);
         }
 
         public async Task<Avatar> GetAvatar(Guid Id)
@@ -115,44 +166,58 @@ namespace Pizzeon_server
             return inventory;
         }
 
-        public Task<PlayerStatsMulti> GetMultiStats(Guid playerid)
+        public async Task<PlayerStatsMulti> GetMultiStats(Guid playerid)
         {
-            throw new NotImplementedException();
+            var filter = Builders<Player>.Filter.Eq("Id", playerid);
+            var cursor = await PlayerCollection.FindAsync(filter);
+            Player player = cursor.Single();
+            return player.MultiStats;
         }
 
-        public Task<Player> GetPlayer(Guid Id)
+        public async Task<Player> GetPlayer(Guid Id)
         {
-            throw new NotImplementedException();
+            var filter = Builders<Player>.Filter.Eq("Id",Id);
+            var cursor = await PlayerCollection.FindAsync(filter);
+            Player player = cursor.Single();
+            return player;
         }
 
-        public Task<PlayerStatsSingle> GetSingleStats(Guid playerid)
+        public async Task<PlayerStatsSingle> GetSingleStats(Guid playerid)
         {
-            throw new NotImplementedException();
+            var filter = Builders<Player>.Filter.Eq("Id", playerid);
+            var cursor = await PlayerCollection.FindAsync(filter);
+            Player player = cursor.Single();
+            return player.SingleStats;
         }
 
-        public Task RemoveAvatar(Guid Id)
+        public async Task RemoveAvatar(Guid Id)
         {
-            throw new NotImplementedException();
+            var filter = Builders<Avatar>.Filter.Eq("Id", Id);
+            await AvatarCollection.DeleteOneAsync(filter);
         }
 
-        public Task RemoveColor(Guid Id)
+        public async Task RemoveColor(Guid Id)
         {
-            throw new NotImplementedException();
+            var filter = Builders<Color>.Filter.Eq("Id", Id);
+            await ColorCollection.DeleteOneAsync(filter);
         }
 
-        public Task RemoveHat(Guid Id)
+        public async Task RemoveHat(Guid Id)
         {
-            throw new NotImplementedException();
+            var filter = Builders<Hat>.Filter.Eq("Id", Id);
+            await HatCollection.DeleteOneAsync(filter);
         }
 
-        public Task RemoveInventory(Guid Id)
+        public async Task RemoveInventory(Guid Id)
         {
-            throw new NotImplementedException();
+            var filter = Builders<Inventory>.Filter.Eq("Id", Id);
+            await InventoryCollection.DeleteOneAsync(filter);
         }
 
-        public Task RemovePlayer(Guid Id)
+        public async Task RemovePlayer(Guid Id)
         {
-            throw new NotImplementedException();
+            var filter = Builders<Player>.Filter.Eq("Id", Id);
+            await PlayerCollection.DeleteOneAsync(filter);
         }
     }
 }
