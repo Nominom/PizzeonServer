@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Pizzeon_server.Models;
 
 namespace Pizzeon_server.Processors
@@ -30,7 +31,8 @@ namespace Pizzeon_server.Processors
             player.Color = Guid.Empty;
             player.Avatar = Guid.Empty;
             player.Money = 0;
-            player.Pizzeria = player.Username + "'s Pizzeria";
+	        string pizzeriaUsername = player.Username.First().ToString().ToUpper() + player.Username.Substring(1);
+            player.Pizzeria = pizzeriaUsername + "'s Pizzeria";
             player.SingleStats = new PlayerStatsSingle();
             player.MultiStats = new PlayerStatsMulti();
             _repository.CreatePlayer(player);
