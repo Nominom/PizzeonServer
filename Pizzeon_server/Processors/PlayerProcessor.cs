@@ -62,5 +62,24 @@ namespace Pizzeon_server.Processors
         {
             _repository.DeductCoinFromPlayer(playerId, price);
         }
+
+	    public PlayerInfo GetInfo(Guid playerid) {
+		    try {
+			    var player = _repository.GetPlayer(playerid).Result;
+			    PlayerInfo info = new PlayerInfo();
+			    info.Id = player.Id;
+				info.Username = player.Username;
+			    info.Avatar = player.Avatar;
+			    info.Hat = player.Hat;
+			    info.Color = player.Color;
+			    info.Money = player.Money;
+			    info.Pizzeria = player.Pizzeria;
+			    return info;
+		    }
+		    catch (Exception) {
+			    return null;
+		    }
+
+	    }
     }
 }

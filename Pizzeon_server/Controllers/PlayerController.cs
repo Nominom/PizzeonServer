@@ -44,6 +44,23 @@ namespace Pizzeon_server.Controllers
 			}
 		}
 
+		[HttpGet("{playerid}")]
+		public JsonResult GetInfo(Guid playerid) {
+			PlayerInfo info = _playerProcessor.GetInfo(playerid);
+			if (info == null) {
+				JsonResult result = new JsonResult("No player was found with this ID.");
+				result.StatusCode = StatusCodes.Status404NotFound;
+
+				return result;
+			}
+			else {
+				JsonResult result = new JsonResult(info);
+				result.StatusCode = StatusCodes.Status200OK;
+
+				return result;
+			}
+		}
+
 		// DELETE api/values/5
 		[HttpDelete("{playerid}")]
 		public ActionResult DeletePlayer (Guid playerid) {
