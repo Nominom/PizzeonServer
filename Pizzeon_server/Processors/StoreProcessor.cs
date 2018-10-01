@@ -56,7 +56,19 @@ namespace Pizzeon_server.Processors
             return _repository.GetColor(Id);
         }
 
-        public void BuyHat(Guid playerId, Guid hatId) {
+		public Task<Hat[]> GetAllHats() {
+			return _repository.GetAllHats();
+		}
+
+		public Task<Color[]> GetAllColors() {
+			return _repository.GetAllColors();
+		}
+
+		public Task<Avatar[]> GetAllAvatars() {
+			return _repository.GetAllAvatars();
+		}
+
+		public void BuyHat(Guid playerId, Guid hatId) {
             Player player = _repository.GetPlayer(playerId).Result;
             Hat hat = GetHat(hatId).Result;
             if (player.Money >= hat.Price) {

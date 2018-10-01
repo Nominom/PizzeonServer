@@ -129,6 +129,24 @@ namespace Pizzeon_server {
 			await PlayerCollection.UpdateOneAsync(filter, update);
 		}
 
+		public async Task<Avatar[]> GetAllAvatars() {
+			var filter = Builders<Avatar>.Filter.Empty;
+			var cursor = await AvatarCollection.FindAsync(filter);
+			return cursor.ToList().ToArray();
+		}
+
+		public async Task<Color[]> GetAllColors() {
+			var filter = Builders<Color>.Filter.Empty;
+			var cursor = await ColorCollection.FindAsync(filter);
+			return cursor.ToList().ToArray();
+		}
+
+		public async Task<Hat[]> GetAllHats() {
+			var filter = Builders<Hat>.Filter.Empty;
+			var cursor = await HatCollection.FindAsync(filter);
+			return cursor.ToList().ToArray();
+		}
+
 		public async Task<Avatar> GetAvatar (Guid Id) {
 			var filter = Builders<Avatar>.Filter.Eq("Id", Id);
 			var cursor = await AvatarCollection.FindAsync(filter);

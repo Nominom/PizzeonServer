@@ -31,5 +31,8 @@ namespace Pizzeon_server
         Task<Color> GetColor (Guid Id);
         Task DeductCoinFromPlayer(Guid playerId, int price);
         Task <Player> GetPlayerByName(string username);
-    }
+		Task<Hat[]> GetAllHats();
+		Task<Color[]> GetAllColors();
+		Task<Avatar[]> GetAllAvatars();
+	}
 }
