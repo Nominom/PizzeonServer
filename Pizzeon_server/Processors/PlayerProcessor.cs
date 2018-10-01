@@ -1,5 +1,7 @@
 using System;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using Pizzeon_server.Models;
 
 namespace Pizzeon_server.Processors
@@ -24,7 +26,8 @@ namespace Pizzeon_server.Processors
 
             Player player = new Player();
             player.Username = newPlayer.Username;
-            player.Password = newPlayer.Password;
+			player.PasswordSalt = Guid.NewGuid().ToString();
+			player.Password = EncodePasswordToBase64(newPlayer.Password+player.PasswordSalt);
             player.Id = Guid.NewGuid();
             player.CreationTime = System.DateTime.Now;
             player.Hat = string.Empty;
@@ -45,7 +48,7 @@ namespace Pizzeon_server.Processors
         {
 	        try {
 		        Player player = _repository.GetPlayerByName(credentials.Username).Result;
-		        if (player.Password == credentials.Password) {
+		        if (player.Password == EncodePasswordToBase64(credentials.Password+player.PasswordSalt)) {
 			        return PlayerAuthorizationToken.Create(player.Id);
 		        }
 		        else {
@@ -86,5 +89,10 @@ namespace Pizzeon_server.Processors
 		    }
 
 	    }
-    }
+		public static string EncodePasswordToBase64(string password) {
+			byte[] bytes = Encoding.Unicode.GetBytes(password);
+			byte[] inArray = HashAlgorithm.Create("SHA1").ComputeHash(bytes);
+			return Convert.ToBase64String(inArray);
+		}
+	}	
 }
