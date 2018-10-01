@@ -36,19 +36,26 @@ namespace Pizzeon_server.Controllers
 		}
 
 		[HttpPost("hat/buy")]
-		public ActionResult BuyHat([FromBody] StoreTransaction transaction) {
-			_processor.BuyHat(transaction.playerId, transaction.itemId);
-			return Ok();
+		public ActionResult BuyHat([FromBody] ItemTransaction transaction) {
+			if (_processor.BuyHat(transaction.playerId, transaction.itemId)) {
+				var ok = Ok("Purchase successful!");
+				return ok;
+			}
+			else {
+				ObjectResult result = new ObjectResult("Not enough money. Or another error occurred.");
+				result.StatusCode = StatusCodes.Status402PaymentRequired;
+				return result;
+			}
 		}
 
 		[HttpPost("color/buy")]
-		public ActionResult BuyColor([FromBody] StoreTransaction transaction) {
+		public ActionResult BuyColor([FromBody] ItemTransaction transaction) {
 			_processor.BuyColor(transaction.playerId, transaction.itemId);
 			return Ok();
 		}
 
 		[HttpPost("avatar/buy")]
-		public ActionResult BuyAvatar([FromBody] StoreTransaction transaction) {
+		public ActionResult BuyAvatar([FromBody] ItemTransaction transaction) {
 			_processor.BuyAvatar(transaction.playerId, transaction.itemId);
 			return Ok();
 		}

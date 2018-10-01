@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Pizzeon_server.Models;
 using MongoDB.Driver;
+using Pizzeon_server.Models;
 
 namespace Pizzeon_server {
 	public class MongoDBRepository : IRepository {
@@ -26,19 +24,19 @@ namespace Pizzeon_server {
 
 		}
 
-		public async Task AddAvatarToInventory (Guid playerid, Guid avatarid) {
+		public async Task AddAvatarToInventory (Guid playerid, string avatarid) {
 			var filter = Builders<Inventory>.Filter.Eq("PlayerId", playerid);
 			var update = Builders<Inventory>.Update.AddToSet("OwnedAvatars", avatarid);
 			await InventoryCollection.UpdateOneAsync(filter, update);
 		}
 
-		public async Task AddColorToInventory (Guid playerid, Guid colorid) {
+		public async Task AddColorToInventory (Guid playerid, string colorid) {
 			var filter = Builders<Inventory>.Filter.Eq("PlayerId", playerid);
 			var update = Builders<Inventory>.Update.AddToSet("OwnedColors", colorid);
 			await InventoryCollection.UpdateOneAsync(filter, update);
 		}
 
-		public async Task AddHatToInventory (Guid playerid, Guid hatid) {
+		public async Task AddHatToInventory (Guid playerid, string hatid) {
 			var filter = Builders<Inventory>.Filter.Eq("PlayerId", playerid);
 			var update = Builders<Inventory>.Update.AddToSet("OwnedHats", hatid);
 			await InventoryCollection.UpdateOneAsync(filter, update);
@@ -98,9 +96,9 @@ namespace Pizzeon_server {
 			var cursor = await PlayerCollection.FindAsync(filter);
 			if (cursor.Any()) {
 				return false;
-			} else {
-				return true;
 			}
+
+			return true;
 		}
 
 		public Task CreateAvatar (Avatar avatar) {
@@ -147,21 +145,21 @@ namespace Pizzeon_server {
 			return cursor.ToList().ToArray();
 		}
 
-		public async Task<Avatar> GetAvatar (Guid Id) {
+		public async Task<Avatar> GetAvatar (string Id) {
 			var filter = Builders<Avatar>.Filter.Eq("Id", Id);
 			var cursor = await AvatarCollection.FindAsync(filter);
 			Avatar avatar = cursor.Single();
 			return avatar;
 		}
 
-		public async Task<Color> GetColor (Guid Id) {
+		public async Task<Color> GetColor (string Id) {
 			var filter = Builders<Color>.Filter.Eq("Id", Id);
 			var cursor = await ColorCollection.FindAsync(filter);
 			Color color = cursor.Single();
 			return color;
 		}
 
-		public async Task<Hat> GetHat (Guid Id) {
+		public async Task<Hat> GetHat (string Id) {
 			var filter = Builders<Hat>.Filter.Eq("Id", Id);
 			var cursor = await HatCollection.FindAsync(filter);
 			Hat hat = cursor.Single();
@@ -194,6 +192,48 @@ namespace Pizzeon_server {
 			var cursor = await PlayerCollection.FindAsync(filter);
 			Player player = cursor.SingleOrDefault();
 			return player;
+		}
+
+		public async Task<bool> InventoryHasHat(Guid playerId, string hatId) {
+			var filter = Builders<Inventory>.Filter.And(
+				Builders<Inventory>.Filter.Eq("PlayerId", playerId), 
+				Builders<Inventory>.Filter.Where(x => x.OwnedHats.Contains(hatId))) ;
+
+			return (await InventoryCollection.FindAsync(filter)).Any();
+		}
+
+		public async Task<bool> InventoryHasAvatar(Guid playerId, string avatarId) {
+			var filter = Builders<Inventory>.Filter.And(
+				Builders<Inventory>.Filter.Eq("PlayerId", playerId), 
+				Builders<Inventory>.Filter.Where(x => x.OwnedAvatars.Contains(avatarId)));
+
+			return (await InventoryCollection.FindAsync(filter)).Any();
+		}
+
+		public async Task<bool> InventoryHasColor(Guid playerId, string colorId) {
+			var filter = Builders<Inventory>.Filter.And(
+				Builders<Inventory>.Filter.Eq("PlayerId", playerId), 
+				Builders<Inventory>.Filter.Where(x => x.OwnedColors.Contains(colorId)));
+
+			return (await InventoryCollection.FindAsync(filter)).Any();
+		}
+
+		public async Task EquipHat(Guid playerId, string hatId) {
+			var filter = Builders<Player>.Filter.Eq("Id", playerId);
+			var update = Builders<Player>.Update.Set("Hat", hatId);
+			await PlayerCollection.UpdateOneAsync(filter, update);
+		}
+
+		public async Task EquipAvatar(Guid playerId, string avatarId) {
+			var filter = Builders<Player>.Filter.Eq("Id", playerId);
+			var update = Builders<Player>.Update.Set("Avatar", avatarId);
+			await PlayerCollection.UpdateOneAsync(filter, update);
+		}
+
+		public async Task EquipColor(Guid playerId, string colorId) {
+			var filter = Builders<Player>.Filter.Eq("Id", playerId);
+			var update = Builders<Player>.Update.Set("Color", colorId);
+			await PlayerCollection.UpdateOneAsync(filter, update);
 		}
 
 		public async Task<PlayerStatsSingle> GetSingleStats (Guid playerid) {

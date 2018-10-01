@@ -22,17 +22,23 @@ namespace Pizzeon_server
         Task RemoveInventory (Guid Id);
         Task AddStatsSingle(Guid playerid, SessionStatsSingle stats);
         Task AddStatsMulti(Guid playerid, SessionStatsMulti stats);
-        Task AddHatToInventory (Guid playerid, Guid hatid);
-        Task AddAvatarToInventory (Guid playerid, Guid avatarid);
-        Task AddColorToInventory (Guid playerid, Guid colorid);
+        Task AddHatToInventory (Guid playerid, string hatid);
+        Task AddAvatarToInventory (Guid playerid, string avatarid);
+        Task AddColorToInventory (Guid playerid, string colorid);
         Task<Inventory> GetInventory (Guid playerId);
-        Task<Hat> GetHat (Guid Id);
-        Task<Avatar> GetAvatar (Guid Id); 
-        Task<Color> GetColor (Guid Id);
+        Task<Hat> GetHat (string Id);
+        Task<Avatar> GetAvatar (string Id); 
+        Task<Color> GetColor (string Id);
         Task DeductCoinFromPlayer(Guid playerId, int price);
         Task <Player> GetPlayerByName(string username);
 		Task<Hat[]> GetAllHats();
 		Task<Color[]> GetAllColors();
 		Task<Avatar[]> GetAllAvatars();
+	    Task<bool> InventoryHasHat(Guid playerId, string hatId);
+	    Task<bool> InventoryHasAvatar (Guid playerId, string avatarId);
+	    Task<bool> InventoryHasColor (Guid playerId, string colorId);
+	    Task EquipHat(Guid playerId, string hatId);
+	    Task EquipAvatar (Guid playerId, string avatarId);
+	    Task EquipColor (Guid playerId, string colorId);
 	}
 }
