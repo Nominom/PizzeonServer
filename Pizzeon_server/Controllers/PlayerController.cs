@@ -63,6 +63,7 @@ namespace Pizzeon_server.Controllers
 
 		// DELETE api/values/5
 		[HttpDelete("{playerid}")]
+		[AdminAuth]
 		public ActionResult DeletePlayer (Guid playerid) {
             _playerProcessor.DeletePlayer(playerid);
             return Ok();

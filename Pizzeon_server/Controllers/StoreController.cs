@@ -18,19 +18,22 @@ namespace Pizzeon_server.Controllers
         }
 
         [HttpPost("hat")]
+		[AdminAuth]
         public ActionResult CreateHat([FromBody] NewHat hat) {
             _processor.CreateHat(hat);
             return Ok();
         }
 
         [HttpPost("color")]
-        public ActionResult CreateColor([FromBody] NewColor color) {
+        [AdminAuth]
+		public ActionResult CreateColor([FromBody] NewColor color) {
             _processor.CreateColor(color);
             return Ok();
         }
 
         [HttpPost("avatar")]
-        public ActionResult CreateAvatar([FromBody] NewAvatar avatar) {
+        [AdminAuth]
+		public ActionResult CreateAvatar([FromBody] NewAvatar avatar) {
             _processor.CreateAvatar(avatar);
             return Ok();
 		}
@@ -50,14 +53,26 @@ namespace Pizzeon_server.Controllers
 
 		[HttpPost("color/buy")]
 		public ActionResult BuyColor([FromBody] ItemTransaction transaction) {
-			_processor.BuyColor(transaction.playerId, transaction.itemId);
-			return Ok();
+			if (_processor.BuyColor(transaction.playerId, transaction.itemId)) {
+				var ok = Ok("Purchase successful!");
+				return ok;
+			} else {
+				ObjectResult result = new ObjectResult("Not enough money. Or another error occurred.");
+				result.StatusCode = StatusCodes.Status402PaymentRequired;
+				return result;
+			}
 		}
 
 		[HttpPost("avatar/buy")]
 		public ActionResult BuyAvatar([FromBody] ItemTransaction transaction) {
-			_processor.BuyAvatar(transaction.playerId, transaction.itemId);
-			return Ok();
+			if (_processor.BuyAvatar(transaction.playerId, transaction.itemId)) {
+				var ok = Ok("Purchase successful!");
+				return ok;
+			} else {
+				ObjectResult result = new ObjectResult("Not enough money. Or another error occurred.");
+				result.StatusCode = StatusCodes.Status402PaymentRequired;
+				return result;
+			}
 		}
 
 		[HttpGet("hat")]
