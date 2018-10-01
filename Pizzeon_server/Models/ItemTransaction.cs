@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace Pizzeon_server.Models
 {
-    public class StoreTransaction
+    public class ItemTransaction
     {
 		public Guid playerId;
-		public Guid itemId;
+		public string itemId;
     }
 }

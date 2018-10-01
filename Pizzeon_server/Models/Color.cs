@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Pizzeon_server.Models {
 	public class Color : PurchaseableItem {
-		public Guid Id { get; set;}
+		[BsonId]
+		public string Id { get; set;}
 		public string Name { get; set;}
 		public int Price { get; set;}
 	}
