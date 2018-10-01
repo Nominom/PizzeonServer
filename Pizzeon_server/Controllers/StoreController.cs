@@ -16,29 +16,53 @@ namespace Pizzeon_server.Controllers
         public StoreController (StoreProcessor storeProcessor) {
             _processor = storeProcessor;
         }
+
         [HttpPost("hat")]
         public ActionResult CreateHat([FromBody] NewHat hat) {
             _processor.CreateHat(hat);
             return Ok();
         }
+
         [HttpPost("color")]
         public ActionResult CreateColor([FromBody] NewColor color) {
             _processor.CreateColor(color);
             return Ok();
         }
+
         [HttpPost("avatar")]
         public ActionResult CreateAvatar([FromBody] NewAvatar avatar) {
             _processor.CreateAvatar(avatar);
             return Ok();
-        }
-        [HttpGet("hat")]
+		}
+
+		[HttpPost("hat/buy")]
+		public ActionResult BuyHat([FromBody] StoreTransaction transaction) {
+			_processor.BuyHat(transaction.playerId, transaction.itemId);
+			return Ok();
+		}
+
+		[HttpPost("color/buy")]
+		public ActionResult BuyColor([FromBody] StoreTransaction transaction) {
+			_processor.BuyColor(transaction.playerId, transaction.itemId);
+			return Ok();
+		}
+
+		[HttpPost("avatar/buy")]
+		public ActionResult BuyAvatar([FromBody] StoreTransaction transaction) {
+			_processor.BuyAvatar(transaction.playerId, transaction.itemId);
+			return Ok();
+		}
+
+		[HttpGet("hat")]
         public IEnumerable<Hat> GetAllHats() {
             return null;
         }
+
         [HttpGet("color")]
         public IEnumerable<Color> GetAllColors() {
             return null;
         }
+
         [HttpGet("avatar")]
         public IEnumerable<Avatar> GetAllAvatars() {
             return null;
