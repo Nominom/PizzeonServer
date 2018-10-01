@@ -21,15 +21,25 @@ namespace Pizzeon_server {
 			if (filterContext.ActionArguments.ContainsKey(PlayerIdParamName)) {
 				var id = filterContext.ActionArguments[PlayerIdParamName] as Guid?;
 
-				string PlayerAuthKey = "testauth"; // get from database
-
-				if (filterContext.HttpContext.Request.Headers.TryGetValue("player_auth_key", out StringValues values)) {
-					if (!values.Contains(PlayerAuthKey)) {
+				if (id != null) {
+					var playerAuthKey = PlayerAuthKeyStorage.GetToken(id.Value);
+					if (playerAuthKey != null) {
+						if (filterContext.HttpContext.Request.Headers.TryGetValue("player_auth_key", out StringValues values)) {
+							if (!values.Contains(playerAuthKey.ApiKey)) {
+								filterContext.Result = new UnauthorizedResult();
+							}
+						} else {
+							filterContext.Result = new UnauthorizedResult();
+						}
+					}
+					else {
 						filterContext.Result = new UnauthorizedResult();
 					}
-				} else {
-					filterContext.Result = new UnauthorizedResult();
 				}
+				else {
+					filterContext.Result = new BadRequestResult();
+				}
+				
 			}
 			else {
 				throw new InvalidFilterCriteriaException("Player auth filter used in a method with no playerId");

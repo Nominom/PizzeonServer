@@ -46,7 +46,9 @@ namespace Pizzeon_server.Processors
 	        try {
 		        Player player = _repository.GetPlayerByName(credentials.Username).Result;
 		        if (player.Password == credentials.Password) {
-			        return PlayerAuthorizationToken.Create(player.Id);
+			        var token = PlayerAuthorizationToken.Create(player.Id);
+					PlayerAuthKeyStorage.AddToken(token);
+					return token;
 		        }
 		        else {
 			        return null;
