@@ -30,14 +30,14 @@ namespace Pizzeon_server.Controllers
         }
 		[HttpPost("login")]
 		public JsonResult Login ([FromBody] LoginCredentials credentials) {
-			Guid guid = _playerProcessor.Login(credentials);
-			if (guid == Guid.Empty) {
-				JsonResult result = new JsonResult(Guid.Empty);
+			PlayerAuthorizationToken token = _playerProcessor.Login(credentials);
+			if (token == null) {
+				JsonResult result = new JsonResult("Unauthorized");
 				result.StatusCode = StatusCodes.Status401Unauthorized;
 
 				return result;
 			} else {
-				JsonResult result = new JsonResult(guid);
+				JsonResult result = new JsonResult(token);
 				result.StatusCode = StatusCodes.Status200OK;
 
 				return result;

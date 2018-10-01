@@ -41,19 +41,19 @@ namespace Pizzeon_server.Processors
             return true;
         }
 
-        public Guid Login(LoginCredentials credentials)
+        public PlayerAuthorizationToken Login(LoginCredentials credentials)
         {
 	        try {
 		        Player player = _repository.GetPlayerByName(credentials.Username).Result;
 		        if (player.Password == credentials.Password) {
-			        return player.Id;
+			        return PlayerAuthorizationToken.Create(player.Id);
 		        }
 		        else {
-			        return Guid.Empty;
+			        return null;
 		        }
 	        }
 	        catch (Exception) {
-				return Guid.Empty;
+				return null;
 	        }
 		}
 
