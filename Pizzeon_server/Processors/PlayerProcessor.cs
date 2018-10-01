@@ -26,7 +26,7 @@ namespace Pizzeon_server.Processors
 
             Player player = new Player();
             player.Username = newPlayer.Username;
-			player.PasswordSalt = Guid.NewGuid().ToString();
+	        player.PasswordSalt = GetRandomSalt();
 			player.Password = EncodePasswordToBase64(newPlayer.Password+player.PasswordSalt);
             player.Id = Guid.NewGuid();
             player.CreationTime = System.DateTime.Now;
@@ -93,8 +93,14 @@ namespace Pizzeon_server.Processors
 	    }
 		public static string EncodePasswordToBase64(string password) {
 			byte[] bytes = Encoding.Unicode.GetBytes(password);
-			byte[] inArray = HashAlgorithm.Create("SHA1").ComputeHash(bytes);
+			byte[] inArray = HashAlgorithm.Create("SHA256").ComputeHash(bytes);
 			return Convert.ToBase64String(inArray);
 		}
+
+	    public static string GetRandomSalt() {
+		    byte[] salt = new byte[32];
+		    RNGCryptoServiceProvider.Create().GetBytes(salt);
+		    return Convert.ToBase64String(salt);
+	    }
 	}	
 }
