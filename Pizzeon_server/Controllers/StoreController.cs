@@ -77,17 +77,17 @@ namespace Pizzeon_server.Controllers
 
 		[HttpGet("hat")]
         public IEnumerable<Hat> GetAllHats() {
-            return null;
+			return _processor.GetAllHats().Result;
         }
 
         [HttpGet("color")]
         public IEnumerable<Color> GetAllColors() {
-            return null;
-        }
+			return _processor.GetAllColors().Result;
+		}
 
         [HttpGet("avatar")]
         public IEnumerable<Avatar> GetAllAvatars() {
-            return null;
-        }
+			return _processor.GetAllAvatars().Result;
+		}
     }
 }

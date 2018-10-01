@@ -31,6 +31,9 @@ namespace Pizzeon_server
         Task<Color> GetColor (string Id);
         Task DeductCoinFromPlayer(Guid playerId, int price);
         Task <Player> GetPlayerByName(string username);
+		Task<Hat[]> GetAllHats();
+		Task<Color[]> GetAllColors();
+		Task<Avatar[]> GetAllAvatars();
 	    Task<bool> InventoryHasHat(Guid playerId, string hatId);
 	    Task<bool> InventoryHasAvatar (Guid playerId, string avatarId);
 	    Task<bool> InventoryHasColor (Guid playerId, string colorId);
