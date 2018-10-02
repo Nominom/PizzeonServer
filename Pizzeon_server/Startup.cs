@@ -28,6 +28,7 @@ namespace Pizzeon_server {
 			services.AddSingleton<PlayerProcessor>();
 			services.AddSingleton<StatsProcessor>();
 			services.AddSingleton<StoreProcessor>();
+			services.AddSingleton<ScoreboardProcessor>();
 			services.AddSingleton<InventoryProcessor>();
 
 			services.AddSingleton<IRepository>(new MongoDBRepository());

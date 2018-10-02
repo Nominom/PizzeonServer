@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Pizzeon_server.Models;
 
@@ -40,5 +41,7 @@ namespace Pizzeon_server
 	    Task EquipHat(Guid playerId, string hatId);
 	    Task EquipAvatar (Guid playerId, string avatarId);
 	    Task EquipColor (Guid playerId, string colorId);
+	    Task<IEnumerable<PlayerStatsView>> GetTopPlayerStatsSingle (int number, int page);
+	    Task<IEnumerable<PlayerStatsView>> GetTopPlayerStatsMulti (int number, int page);
 	}
 }

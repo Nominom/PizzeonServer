@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 using Pizzeon_server.Models;
@@ -234,6 +235,46 @@ namespace Pizzeon_server {
 			var filter = Builders<Player>.Filter.Eq("Id", playerId);
 			var update = Builders<Player>.Update.Set("Color", colorId);
 			await PlayerCollection.UpdateOneAsync(filter, update);
+		}
+
+		public async Task<IEnumerable<PlayerStatsView>> GetTopPlayerStatsSingle(int number, int page) {
+			var sort = Builders<Player>.Sort.Descending(x => x.SingleStats.BestPoints);
+			var aggregate = PlayerCollection.Aggregate()
+				.Sort(sort)
+				.Match(x => x.SingleStats.PlayedGames > 0)
+				.Skip(page * number)
+				.Limit(number)
+				.Project(x => new PlayerStatsView() {
+					Username = x.Username,
+					Pizzeria = x.Pizzeria,
+					Accuracy = x.SingleStats.Dropped == 0? 0 : (x.SingleStats.PinpointAccuracy/(float)x.SingleStats.Dropped),
+					AllPoints = x.SingleStats.AllPoints,
+					BestPoints = x.SingleStats.BestPoints,
+					Distance = x.SingleStats.Distance,
+					PizzasDelivered = x.SingleStats.Hits,
+					PlayedGames = x.SingleStats.PlayedGames
+				});
+			return await aggregate.ToListAsync();
+		}
+
+		public async Task<IEnumerable<PlayerStatsView>> GetTopPlayerStatsMulti(int number, int page) {
+			var sort = Builders<Player>.Sort.Descending(x => x.MultiStats.BestPoints);
+			var aggregate = PlayerCollection.Aggregate()
+				.Sort(sort)
+				.Match(x => x.MultiStats.PlayedGames > 0)
+				.Skip(page * number)
+				.Limit(number)
+				.Project(x => new PlayerStatsView() {
+					Username = x.Username,
+					Pizzeria = x.Pizzeria,
+					Accuracy = x.MultiStats.PinpointAccuracy / x.MultiStats.Dropped,
+					AllPoints = x.MultiStats.AllPoints,
+					BestPoints = x.MultiStats.BestPoints,
+					Distance = x.MultiStats.Distance,
+					PizzasDelivered = x.MultiStats.Hits,
+					PlayedGames = x.MultiStats.PlayedGames
+				});
+			return await aggregate.ToListAsync();
 		}
 
 		public async Task<PlayerStatsSingle> GetSingleStats (Guid playerid) {
