@@ -73,6 +73,11 @@ namespace Pizzeon_server.Processors
             _repository.DeductCoinFromPlayer(playerId, price);
         }
 
+		public void AddCoin(Guid playerId, int coin)
+        {
+            _repository.AddCoinToPlayer(playerId, coin);
+        }
+
 	    public PlayerInfo GetInfo(Guid playerid) {
 		    try {
 			    var player = _repository.GetPlayer(playerid).Result;
