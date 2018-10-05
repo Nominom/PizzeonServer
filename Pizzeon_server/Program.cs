@@ -15,7 +15,10 @@ namespace Pizzeon_server {
 		}
 
 		public static IWebHostBuilder CreateWebHostBuilder (string[] args) =>
-			WebHost.CreateDefaultBuilder(args)
+			new WebHostBuilder()
+				.UseKestrel()
+				.UseContentRoot(Directory.GetCurrentDirectory())
+				.UseIISIntegration()
 				.UseStartup<Startup>();
 	}
 }
