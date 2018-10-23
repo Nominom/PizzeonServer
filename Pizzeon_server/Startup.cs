@@ -31,7 +31,7 @@ namespace Pizzeon_server {
 			services.AddSingleton<ScoreboardProcessor>();
 			services.AddSingleton<InventoryProcessor>();
 
-			services.AddSingleton<IRepository>(new MongoDBRepository());
+			services.AddSingleton<IRepository>(new MongoDbRepository(Configuration));
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -62,10 +62,10 @@ namespace Pizzeon_server.Processors
 	        }
 		}
 
-        public void DeletePlayer (Guid Id) 
+        public void DeletePlayer (Guid id) 
         {
-            _repository.RemovePlayer(Id);
-            _inventoryProcessor.RemoveInventory(Id);
+            _repository.RemovePlayer(id);
+            _inventoryProcessor.RemoveInventory(id);
         }
 
         public void DeductCoin(Guid playerId, int price)

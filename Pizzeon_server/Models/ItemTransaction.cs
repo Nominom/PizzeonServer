@@ -7,7 +7,7 @@ namespace Pizzeon_server.Models
 {
     public class ItemTransaction
     {
-		public Guid playerId;
-		public string itemId;
+		public Guid PlayerId;
+		public string ItemId;
     }
 }

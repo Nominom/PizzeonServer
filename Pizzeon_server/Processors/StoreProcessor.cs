@@ -44,16 +44,16 @@ namespace Pizzeon_server.Processors
 
         }
 
-        public Task<Hat> GetHat(string Id) {
-            return _repository.GetHat(Id);
+        public Task<Hat> GetHat(string id) {
+            return _repository.GetHat(id);
         }
 
-        public Task<Avatar> GetAvatar(string Id) {
-            return _repository.GetAvatar(Id);
+        public Task<Avatar> GetAvatar(string id) {
+            return _repository.GetAvatar(id);
         }
 
-        public Task<Color> GetColor(string Id) {
-            return _repository.GetColor(Id);
+        public Task<Color> GetColor(string id) {
+            return _repository.GetColor(id);
         }
 
 		public Task<Hat[]> GetAllHats() {
@@ -127,16 +127,16 @@ namespace Pizzeon_server.Processors
         }
 
 
-        public void DeleteColor(Guid Id) {
-            _repository.RemoveColor(Id);
+        public void DeleteColor(Guid id) {
+            _repository.RemoveColor(id);
         }
 
-        public void DeleteAvatar(Guid Id) {
-            _repository.RemoveAvatar(Id);
+        public void DeleteAvatar(Guid id) {
+            _repository.RemoveAvatar(id);
         }
 
-        public void DeleteHat(Guid Id) {
-            _repository.RemoveHat(Id);
+        public void DeleteHat(Guid id) {
+            _repository.RemoveHat(id);
         }
     }
 }

@@ -260,3 +260,7 @@ paket-files/
 __pycache__/
 *.pyc
 Pizzeon_server/Properties/launchSettings.json
+Pizzeon_server/site/
+Pizzeon_server/site.zip
+Pizzeon_server/secrets.json
+Pizzeon_server/aws-windows-deploy.zip

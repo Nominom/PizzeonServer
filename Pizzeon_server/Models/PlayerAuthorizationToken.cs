@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MongoDB.Bson.Serialization.Attributes;
+using Pizzeon_server.Processors;
 
 namespace Pizzeon_server.Models {
 	public class PlayerAuthorizationToken {
@@ -12,7 +13,7 @@ namespace Pizzeon_server.Models {
 
 		public static PlayerAuthorizationToken Create(Guid playerId) {
 			var token = new PlayerAuthorizationToken {
-				ApiKey = Guid.NewGuid().ToString(),
+				ApiKey = PlayerProcessor.GetRandomSalt(),
 				PlayerId = playerId
 			};
 			return token;

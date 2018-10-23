@@ -38,9 +38,10 @@ namespace Pizzeon_server.Controllers
             return Ok();
 		}
 
-		[HttpPost("hat/buy")]
-		public ActionResult BuyHat([FromBody] ItemTransaction transaction) {
-			if (_processor.BuyHat(transaction.playerId, transaction.itemId)) {
+		[HttpPost("hat/{itemId}/buy/{playerId}")]
+		[PlayerAuth("playerId")]
+		public ActionResult BuyHat(Guid playerId, string itemId) {
+			if (_processor.BuyHat(playerId, itemId)) {
 				var ok = Ok("Purchase successful!");
 				return ok;
 			}
@@ -51,9 +52,10 @@ namespace Pizzeon_server.Controllers
 			}
 		}
 
-		[HttpPost("color/buy")]
-		public ActionResult BuyColor([FromBody] ItemTransaction transaction) {
-			if (_processor.BuyColor(transaction.playerId, transaction.itemId)) {
+	    [HttpPost("color/{itemId}/buy/{playerId}")]
+	    [PlayerAuth("playerId")]
+		public ActionResult BuyColor(Guid playerId, string itemId) {
+			if (_processor.BuyColor(playerId, itemId)) {
 				var ok = Ok("Purchase successful!");
 				return ok;
 			} else {
@@ -63,9 +65,10 @@ namespace Pizzeon_server.Controllers
 			}
 		}
 
-		[HttpPost("avatar/buy")]
-		public ActionResult BuyAvatar([FromBody] ItemTransaction transaction) {
-			if (_processor.BuyAvatar(transaction.playerId, transaction.itemId)) {
+	    [HttpPost("avatar/{itemId}/buy/{playerId}")]
+	    [PlayerAuth("playerId")]
+		public ActionResult BuyAvatar(Guid playerId, string itemId) {
+			if (_processor.BuyAvatar(playerId, itemId)) {
 				var ok = Ok("Purchase successful!");
 				return ok;
 			} else {
