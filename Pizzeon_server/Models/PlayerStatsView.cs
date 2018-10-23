@@ -16,5 +16,6 @@ namespace Pizzeon_server.Models {
 		public int AllPoints { get; set; }
 		public int BestPoints { get; set; }
 		public int PizzasDelivered { get; set; }
+		public float PlayTime { get; set; }
 	}
 }

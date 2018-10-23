@@ -258,7 +258,8 @@ namespace Pizzeon_server {
 					BestPoints = x.SingleStats.BestPoints,
 					Distance = x.SingleStats.Distance,
 					PizzasDelivered = x.SingleStats.Hits,
-					PlayedGames = x.SingleStats.PlayedGames
+					PlayedGames = x.SingleStats.PlayedGames,
+					PlayTime = x.SingleStats.OverallGameTime
 				});
 			return await aggregate.ToListAsync();
 		}
@@ -278,7 +279,8 @@ namespace Pizzeon_server {
 					BestPoints = x.MultiStats.BestPoints,
 					Distance = x.MultiStats.Distance,
 					PizzasDelivered = x.MultiStats.Hits,
-					PlayedGames = x.MultiStats.PlayedGames
+					PlayedGames = x.MultiStats.PlayedGames,
+					PlayTime = x.MultiStats.OverallGameTime
 				});
 			return await aggregate.ToListAsync();
 		}
