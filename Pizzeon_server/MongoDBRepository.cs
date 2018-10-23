@@ -132,6 +132,12 @@ namespace Pizzeon_server {
 			await _playerCollection.UpdateOneAsync(filter, update);
 		}
 
+		public async Task AddCoinToPlayer (Guid playerId, int coin) {
+			var filter = Builders<Player>.Filter.Eq("Id", playerId);
+			var update = Builders<Player>.Update.Inc("Money", +coin);
+			await PlayerCollection.UpdateOneAsync(filter, update);
+		}
+
 		public async Task<Avatar[]> GetAllAvatars() {
 			var filter = Builders<Avatar>.Filter.Empty;
 			var cursor = await _avatarCollection.FindAsync(filter);
