@@ -48,5 +48,18 @@ namespace Pizzeon_server.Controllers {
 				return UnprocessableEntity("Player not found or player doesn't own item");
 			}
 		}
+
+		[HttpGet("{playerId}")]
+		[PlayerAuth("playerId")]
+		public ActionResult GetInventory(Guid playerId) {
+			var inventory = _processor.GetInventory(playerId).Result;
+
+			if (inventory == null) {
+				return UnprocessableEntity("Bad inventory query.");
+			}
+			else {
+				return new JsonResult(inventory);
+			}
+		}
 	}
 }

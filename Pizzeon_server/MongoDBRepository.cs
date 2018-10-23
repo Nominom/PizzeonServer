@@ -106,16 +106,40 @@ namespace Pizzeon_server {
 			return true;
 		}
 
-		public Task CreateAvatar (Avatar avatar) {
-			return _avatarCollection.InsertOneAsync(avatar);
+		public async Task CreateAvatar (Avatar avatar) {
+			var filter = Builders<Avatar>.Filter.Eq("Id", avatar.Id);
+			var existingAvatar = await _avatarCollection.FindAsync(filter);
+
+			if (!existingAvatar.Any()) {
+				await _avatarCollection.InsertOneAsync(avatar);
+			}
+			else {
+				await _avatarCollection.ReplaceOneAsync(filter, avatar);
+			}
 		}
 
-		public Task CreateColor (Color color) {
-			return _colorCollection.InsertOneAsync(color);
+		public async Task CreateColor (Color color) {
+			var filter = Builders<Color>.Filter.Eq("Id", color.Id);
+			var existingColor = await _colorCollection.FindAsync(filter);
+
+			if (!existingColor.Any()) {
+				await _colorCollection.InsertOneAsync(color);
+			}
+			else {
+				await _colorCollection.ReplaceOneAsync(filter, color);
+			}
 		}
 
-		public Task CreateHat (Hat hat) {
-			return _hatCollection.InsertOneAsync(hat);
+		public async Task CreateHat (Hat hat) {
+			var filter = Builders<Hat>.Filter.Eq("Id", hat.Id);
+			var existingHat = await _hatCollection.FindAsync(filter);
+
+			if (!existingHat.Any()) {
+				await _hatCollection.InsertOneAsync(hat);
+			}
+			else {
+				await _hatCollection.ReplaceOneAsync(filter, hat);
+			}
 		}
 
 		public Task CreateInventory (Inventory inventory) {
@@ -135,7 +159,7 @@ namespace Pizzeon_server {
 		public async Task AddCoinToPlayer (Guid playerId, int coin) {
 			var filter = Builders<Player>.Filter.Eq("Id", playerId);
 			var update = Builders<Player>.Update.Inc("Money", +coin);
-			await PlayerCollection.UpdateOneAsync(filter, update);
+			await _playerCollection.UpdateOneAsync(filter, update);
 		}
 
 		public async Task<Avatar[]> GetAllAvatars() {
