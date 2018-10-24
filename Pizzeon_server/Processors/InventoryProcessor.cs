@@ -91,6 +91,6 @@ namespace Pizzeon_server.Processors
         public void RemoveInventory (Guid playerId) 
         {
             _repository.RemoveInventory(playerId);
-        }
-    }
+		}
+	}
 }
