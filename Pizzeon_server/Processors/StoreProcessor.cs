@@ -69,7 +69,7 @@ namespace Pizzeon_server.Processors
 		}
 
         public bool BuyHat(Guid playerId, string hatId) {
-	        try {
+	        //try {
 		        Player player = _repository.GetPlayer(playerId).Result;
 		        Hat hat = GetHat(hatId).Result;
 		        if (player.Money >= hat.Price) {
@@ -81,10 +81,11 @@ namespace Pizzeon_server.Processors
 //      TODO: Show error message
 			        return false;
 		        }
-	        }
-	        catch (Exception) {
+	        //}
+	        /*catch (Exception e) {
+				Console.WriteLine(e.Message);
 		        return false;
-	        }
+	        }*/
 
 		}
 
