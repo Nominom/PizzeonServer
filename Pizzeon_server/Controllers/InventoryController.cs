@@ -18,7 +18,7 @@ namespace Pizzeon_server.Controllers {
 			_processor = inventoryProcessor;
 		}
 
-		[HttpPut("hat/{itemId}/equip/{playerId}")]
+		[HttpPost("hat/{itemId}/equip/{playerId}")]
 		[PlayerAuth("playerId")]
 		public ActionResult EquipHat(Guid playerId, string itemId) {
 			if (_processor.EquipHat(playerId, itemId)) {
@@ -29,7 +29,7 @@ namespace Pizzeon_server.Controllers {
 			}
 		}
 
-		[HttpPut("avatar/{itemId}/equip/{playerId}")]
+		[HttpPost("avatar/{itemId}/equip/{playerId}")]
 		[PlayerAuth("playerId")]
 		public ActionResult EquipAvatar (Guid playerId, string itemId) {
 			if (_processor.EquipAvatar(playerId, itemId)) {
@@ -39,7 +39,7 @@ namespace Pizzeon_server.Controllers {
 			}
 		}
 
-		[HttpPut("color/{itemId}/equip/{playerId}")]
+		[HttpPost("color/{itemId}/equip/{playerId}")]
 		[PlayerAuth("playerId")]
 		public ActionResult EquipColor (Guid playerId, string itemId) {
 			if (_processor.EquipColor(playerId, itemId)) {
