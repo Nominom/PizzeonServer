@@ -9,10 +9,12 @@ using Microsoft.AspNetCore.Mvc;
 namespace Pizzeon_server.Controllers {
 	[Route("api/[controller]")]
 	public class TestController : Controller {
+		private const string VersionNumber = "0005";
+
 		// GET: api/<controller>
 		[HttpGet]
 		public string Get () {
-			return "All OK!";
+			return "All OK! Version: " + VersionNumber;
 		}
 	}
 }
