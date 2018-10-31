@@ -65,6 +65,7 @@ namespace Pizzeon_server.Processors
 		}
 
 		public Task<Avatar[]> GetAllAvatars() {
+			Console.WriteLine("Inside StoreProcessor, getting avatars...");
 			return _repository.GetAllAvatars();
 		}
 
