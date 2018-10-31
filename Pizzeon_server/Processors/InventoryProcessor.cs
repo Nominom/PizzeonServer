@@ -21,7 +21,13 @@ namespace Pizzeon_server.Processors
             inventory.OwnedAvatars = new List<string>();
             inventory.OwnedColors = new List<string>();
             inventory.OwnedHats = new List<string>();
-            _repository.CreateInventory(inventory);
+
+			//Add default hat, color and avatar to player inventory
+			inventory.OwnedHats.Add("0");
+			inventory.OwnedColors.Add("0");
+			inventory.OwnedAvatars.Add("0");
+
+			_repository.CreateInventory(inventory);
         }
 
 	    public bool EquipHat(Guid playerId, string hatId) {
