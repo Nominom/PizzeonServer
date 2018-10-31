@@ -43,9 +43,11 @@ namespace Pizzeon_server.Processors
 	    public bool EquipAvatar (Guid playerId, string avatarId) {
 			try {
 				if (_repository.InventoryHasAvatar(playerId, avatarId).Result) {
+					Console.WriteLine("Found the avatar!");
 					_repository.EquipAvatar(playerId, avatarId);
 					return true;
 				} else {
+					Console.WriteLine("Could not find avatar!");
 					return false;
 				}
 			} catch (Exception ex) {

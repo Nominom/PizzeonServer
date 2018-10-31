@@ -163,6 +163,7 @@ namespace Pizzeon_server {
 		}
 
 		public async Task<Avatar[]> GetAllAvatars() {
+			Console.WriteLine("Inside MongoDBRepository, getting avatars...");
 			var filter = Builders<Avatar>.Filter.Empty;
 			var cursor = await _avatarCollection.FindAsync(filter);
 			return cursor.ToList().ToArray();
