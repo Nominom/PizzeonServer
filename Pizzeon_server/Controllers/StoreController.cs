@@ -90,7 +90,17 @@ namespace Pizzeon_server.Controllers
 
         [HttpGet("avatar")]
         public IEnumerable<Avatar> GetAllAvatars() {
-			return _processor.GetAllAvatars().Result;
+			Console.WriteLine("Inside StoreController, getting avatars...");
+			var avatars = _processor.GetAllAvatars().Result;
+
+			string str = "Avatars:";
+			foreach (var avatar in avatars) {
+				str += "\n" + avatar;
+			}
+
+			Console.WriteLine(str);
+
+			return avatars;
 		}
     }
 }
