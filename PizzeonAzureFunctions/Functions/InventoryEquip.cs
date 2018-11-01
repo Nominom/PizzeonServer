@@ -16,9 +16,13 @@ namespace PizzeonAzureFunctions.Functions
         {
 	        if (!Guid.TryParse(playerId, out Guid pId)) {
 		        return req.CreateResponse(HttpStatusCode.BadRequest, "Given Guid is not valid");
-	        }
+			}
 
-	        try {
+			if (!await SecurityManager.CheckSecurityTokenValid(req, log, pId)) {
+				return req.CreateResponse(HttpStatusCode.Unauthorized, "Security token is not valid");
+			}
+
+			try {
 		        switch (type) {
 			        case ("hat"):
 				        if (await MongoDbRepository.InventoryHasHat(pId, itemId)) {

@@ -19,7 +19,7 @@ namespace PizzeonAzureFunctions.Functions
 				return req.CreateResponse(HttpStatusCode.BadRequest, "Given Guid is not valid");
 			}
 
-	        try {
+			try {
 		        var player = await MongoDbRepository.GetPlayer(id);
 				PlayerInfo info = new PlayerInfo {
 					Id = player.Id,

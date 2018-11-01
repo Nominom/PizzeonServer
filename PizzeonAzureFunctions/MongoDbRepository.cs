@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 using MongoDB.Driver;
 using Pizzeon_server.Models;
 
-namespace PizzeonAzureFunctions {
-	public static class MongoDbRepository {
+namespace PizzeonAzureFunctions
+{
+	public static class MongoDbRepository
+	{
 
 		public const string DbName = "pizzeon";
 
@@ -16,8 +18,9 @@ namespace PizzeonAzureFunctions {
 		private static IMongoCollection<Hat> HatCollection => GetCollection<Hat>("hats");
 		private static IMongoCollection<Color> ColorCollection => GetCollection<Color>("colors");
 		private static IMongoCollection<Avatar> AvatarCollection => GetCollection<Avatar>("avatars");
+		private static IMongoCollection<PlayerAuthorizationToken> TokenCollection => GetCollection<PlayerAuthorizationToken>("tokens");
 
-		private static IMongoCollection<T> GetCollection<T> (string collectionName) {
+		private static IMongoCollection<T> GetCollection<T>(string collectionName) {
 			MongoClient client = new MongoClient(System.Environment.GetEnvironmentVariable("MongoDBConnectionString"));
 			IMongoDatabase db = client.GetDatabase(DbName);
 
@@ -25,25 +28,25 @@ namespace PizzeonAzureFunctions {
 			return collection;
 		}
 
-		public static Task CreatePlayer (Player player) {
+		public static Task CreatePlayer(Player player) {
 			return PlayerCollection.InsertOneAsync(player);
 		}
 
-		public static async Task<Player> GetPlayer (Guid id) {
+		public static async Task<Player> GetPlayer(Guid id) {
 			var filter = Builders<Player>.Filter.Eq("Id", id);
 			var cursor = await PlayerCollection.FindAsync(filter);
 			Player player = cursor.Single();
 			return player;
 		}
 
-		public static async Task<Player> GetPlayerByName (string username) {
+		public static async Task<Player> GetPlayerByName(string username) {
 			var filter = Builders<Player>.Filter.Eq("Username", username);
 			var cursor = await PlayerCollection.FindAsync(filter);
 			Player player = cursor.SingleOrDefault();
 			return player;
 		}
 
-		public static async Task<bool> CheckUsernameAvailable (string username) {
+		public static async Task<bool> CheckUsernameAvailable(string username) {
 			var filter = Builders<Player>.Filter.Eq("Username", username);
 			var cursor = await PlayerCollection.FindAsync(filter);
 			if (cursor.Any()) {
@@ -53,13 +56,13 @@ namespace PizzeonAzureFunctions {
 			return true;
 		}
 
-		public static async Task DeductCoinFromPlayer (Guid playerId, int price) {
+		public static async Task DeductCoinFromPlayer(Guid playerId, int price) {
 			var filter = Builders<Player>.Filter.Eq("Id", playerId);
 			var update = Builders<Player>.Update.Inc("Money", -price);
 			await PlayerCollection.UpdateOneAsync(filter, update);
 		}
 
-		public static async Task AddCoinToPlayer (Guid playerId, int coin) {
+		public static async Task AddCoinToPlayer(Guid playerId, int coin) {
 			var filter = Builders<Player>.Filter.Eq("Id", playerId);
 			var update = Builders<Player>.Update.Inc("Money", +coin);
 			await PlayerCollection.UpdateOneAsync(filter, update);
@@ -67,7 +70,7 @@ namespace PizzeonAzureFunctions {
 
 
 
-		public static async Task CreateAvatar (Avatar avatar) {
+		public static async Task CreateAvatar(Avatar avatar) {
 			var filter = Builders<Avatar>.Filter.Eq("Id", avatar.Id);
 			var existingAvatar = await AvatarCollection.FindAsync(filter);
 
@@ -78,7 +81,7 @@ namespace PizzeonAzureFunctions {
 			}
 		}
 
-		public static async Task CreateColor (Color color) {
+		public static async Task CreateColor(Color color) {
 			var filter = Builders<Color>.Filter.Eq("Id", color.Id);
 			var existingColor = await ColorCollection.FindAsync(filter);
 
@@ -89,7 +92,7 @@ namespace PizzeonAzureFunctions {
 			}
 		}
 
-		public static async Task CreateHat (Hat hat) {
+		public static async Task CreateHat(Hat hat) {
 			var filter = Builders<Hat>.Filter.Eq("Id", hat.Id);
 			var existingHat = await HatCollection.FindAsync(filter);
 
@@ -100,54 +103,54 @@ namespace PizzeonAzureFunctions {
 			}
 		}
 
-		public static async Task<Avatar[]> GetAllAvatars () {
+		public static async Task<Avatar[]> GetAllAvatars() {
 			var filter = Builders<Avatar>.Filter.Empty;
 			var cursor = await AvatarCollection.FindAsync(filter);
 			return cursor.ToList().ToArray();
 		}
 
-		public static async Task<Color[]> GetAllColors () {
+		public static async Task<Color[]> GetAllColors() {
 			var filter = Builders<Color>.Filter.Empty;
 			var cursor = await ColorCollection.FindAsync(filter);
 			return cursor.ToList().ToArray();
 		}
 
-		public static async Task<Hat[]> GetAllHats () {
+		public static async Task<Hat[]> GetAllHats() {
 			var filter = Builders<Hat>.Filter.Empty;
 			var cursor = await HatCollection.FindAsync(filter);
 			return cursor.ToList().ToArray();
 		}
 
-		public static Task CreateInventory (Inventory inventory) {
+		public static Task CreateInventory(Inventory inventory) {
 			return InventoryCollection.InsertOneAsync(inventory);
 		}
 
-		public static async Task<Inventory> GetInventory (Guid playerId) {
+		public static async Task<Inventory> GetInventory(Guid playerId) {
 			var filter = Builders<Inventory>.Filter.Eq("PlayerId", playerId);
 			var cursor = await InventoryCollection.FindAsync(filter);
 			Inventory inventory = cursor.Single();
 			return inventory;
 		}
 
-		public static async Task AddAvatarToInventory (Guid playerid, string avatarid) {
+		public static async Task AddAvatarToInventory(Guid playerid, string avatarid) {
 			var filter = Builders<Inventory>.Filter.Eq("PlayerId", playerid);
 			var update = Builders<Inventory>.Update.AddToSet("OwnedAvatars", avatarid);
 			await InventoryCollection.UpdateOneAsync(filter, update);
 		}
 
-		public static async Task AddColorToInventory (Guid playerid, string colorid) {
+		public static async Task AddColorToInventory(Guid playerid, string colorid) {
 			var filter = Builders<Inventory>.Filter.Eq("PlayerId", playerid);
 			var update = Builders<Inventory>.Update.AddToSet("OwnedColors", colorid);
 			await InventoryCollection.UpdateOneAsync(filter, update);
 		}
 
-		public static async Task AddHatToInventory (Guid playerid, string hatid) {
+		public static async Task AddHatToInventory(Guid playerid, string hatid) {
 			var filter = Builders<Inventory>.Filter.Eq("PlayerId", playerid);
 			var update = Builders<Inventory>.Update.AddToSet("OwnedHats", hatid);
 			await InventoryCollection.UpdateOneAsync(filter, update);
 		}
 
-		public static async Task<bool> InventoryHasHat (Guid playerId, string hatId) {
+		public static async Task<bool> InventoryHasHat(Guid playerId, string hatId) {
 			var filter = Builders<Inventory>.Filter.And(
 				Builders<Inventory>.Filter.Eq("PlayerId", playerId),
 				Builders<Inventory>.Filter.Where(x => x.OwnedHats.Contains(hatId)));
@@ -155,7 +158,7 @@ namespace PizzeonAzureFunctions {
 			return (await InventoryCollection.FindAsync(filter)).Any();
 		}
 
-		public static async Task<bool> InventoryHasAvatar (Guid playerId, string avatarId) {
+		public static async Task<bool> InventoryHasAvatar(Guid playerId, string avatarId) {
 			var filter = Builders<Inventory>.Filter.And(
 				Builders<Inventory>.Filter.Eq("PlayerId", playerId),
 				Builders<Inventory>.Filter.Where(x => x.OwnedAvatars.Contains(avatarId)));
@@ -163,7 +166,7 @@ namespace PizzeonAzureFunctions {
 			return (await InventoryCollection.FindAsync(filter)).Any();
 		}
 
-		public static async Task<bool> InventoryHasColor (Guid playerId, string colorId) {
+		public static async Task<bool> InventoryHasColor(Guid playerId, string colorId) {
 			var filter = Builders<Inventory>.Filter.And(
 				Builders<Inventory>.Filter.Eq("PlayerId", playerId),
 				Builders<Inventory>.Filter.Where(x => x.OwnedColors.Contains(colorId)));
@@ -171,39 +174,39 @@ namespace PizzeonAzureFunctions {
 			return (await InventoryCollection.FindAsync(filter)).Any();
 		}
 
-		public static async Task EquipHat (Guid playerId, string hatId) {
+		public static async Task EquipHat(Guid playerId, string hatId) {
 			var filter = Builders<Player>.Filter.Eq("Id", playerId);
 			var update = Builders<Player>.Update.Set("Hat", hatId);
 			await PlayerCollection.UpdateOneAsync(filter, update);
 		}
 
-		public static async Task EquipAvatar (Guid playerId, string avatarId) {
+		public static async Task EquipAvatar(Guid playerId, string avatarId) {
 			var filter = Builders<Player>.Filter.Eq("Id", playerId);
 			var update = Builders<Player>.Update.Set("Avatar", avatarId);
 			await PlayerCollection.UpdateOneAsync(filter, update);
 		}
 
-		public static async Task EquipColor (Guid playerId, string colorId) {
+		public static async Task EquipColor(Guid playerId, string colorId) {
 			var filter = Builders<Player>.Filter.Eq("Id", playerId);
 			var update = Builders<Player>.Update.Set("Color", colorId);
 			await PlayerCollection.UpdateOneAsync(filter, update);
 		}
 
-		public static async Task<Avatar> GetAvatar (string id) {
+		public static async Task<Avatar> GetAvatar(string id) {
 			var filter = Builders<Avatar>.Filter.Eq("Id", id);
 			var cursor = await AvatarCollection.FindAsync(filter);
 			Avatar avatar = cursor.Single();
 			return avatar;
 		}
 
-		public static async Task<Color> GetColor (string id) {
+		public static async Task<Color> GetColor(string id) {
 			var filter = Builders<Color>.Filter.Eq("Id", id);
 			var cursor = await ColorCollection.FindAsync(filter);
 			Color color = cursor.Single();
 			return color;
 		}
 
-		public static async Task<Hat> GetHat (string id) {
+		public static async Task<Hat> GetHat(string id) {
 			var filter = Builders<Hat>.Filter.Eq("Id", id);
 			var cursor = await HatCollection.FindAsync(filter);
 			Hat hat = cursor.Single();
@@ -211,7 +214,7 @@ namespace PizzeonAzureFunctions {
 		}
 
 
-		public static async Task<PlayerStatsSingle> GetSingleStats (Guid playerid) {
+		public static async Task<PlayerStatsSingle> GetSingleStats(Guid playerid) {
 			var filter = Builders<Player>.Filter.Eq("Id", playerid);
 			var cursor = await PlayerCollection.FindAsync(filter);
 			Player player = cursor.Single();
@@ -219,14 +222,14 @@ namespace PizzeonAzureFunctions {
 		}
 
 
-		public static async Task<PlayerStatsMulti> GetMultiStats (Guid playerid) {
+		public static async Task<PlayerStatsMulti> GetMultiStats(Guid playerid) {
 			var filter = Builders<Player>.Filter.Eq("Id", playerid);
 			var cursor = await PlayerCollection.FindAsync(filter);
 			Player player = cursor.SingleOrDefault();
 			return player.MultiStats;
 		}
 
-		public static async Task AddStatsSingle (Guid playerid, SessionStatsSingle stats) {
+		public static async Task AddStatsSingle(Guid playerid, SessionStatsSingle stats) {
 			var filter = Builders<Player>.Filter.Eq("Id", playerid);
 			var cursor = await PlayerCollection.FindAsync(filter);
 			Player player = cursor.Single();
@@ -252,7 +255,7 @@ namespace PizzeonAzureFunctions {
 
 		}
 
-		public static async Task AddStatsMulti (Guid playerid, SessionStatsMulti stats) {
+		public static async Task AddStatsMulti(Guid playerid, SessionStatsMulti stats) {
 			var filter = Builders<Player>.Filter.Eq("Id", playerid);
 			var cursor = await PlayerCollection.FindAsync(filter);
 			Player player = cursor.Single();
@@ -278,14 +281,15 @@ namespace PizzeonAzureFunctions {
 		}
 
 
-		public static async Task<IEnumerable<PlayerStatsView>> GetTopPlayerStatsSingle (int number, int page) {
+		public static async Task<IEnumerable<PlayerStatsView>> GetTopPlayerStatsSingle(int number, int page) {
 			var sort = Builders<Player>.Sort.Descending(x => x.SingleStats.BestPoints);
 			var aggregate = PlayerCollection.Aggregate()
 				.Sort(sort)
 				.Match(x => x.SingleStats.PlayedGames > 0)
 				.Skip(page * number)
 				.Limit(number)
-				.Project(x => new PlayerStatsView() {
+				.Project(x => new PlayerStatsView()
+				{
 					Username = x.Username,
 					Pizzeria = x.Pizzeria,
 					Accuracy = x.SingleStats.Dropped == 0 ? 0 : (x.SingleStats.PinpointAccuracy / (float)x.SingleStats.Dropped),
@@ -299,14 +303,15 @@ namespace PizzeonAzureFunctions {
 			return await aggregate.ToListAsync();
 		}
 
-		public static async Task<IEnumerable<PlayerStatsView>> GetTopPlayerStatsMulti (int number, int page) {
+		public static async Task<IEnumerable<PlayerStatsView>> GetTopPlayerStatsMulti(int number, int page) {
 			var sort = Builders<Player>.Sort.Descending(x => x.MultiStats.BestPoints);
 			var aggregate = PlayerCollection.Aggregate()
 				.Sort(sort)
 				.Match(x => x.MultiStats.PlayedGames > 0)
 				.Skip(page * number)
 				.Limit(number)
-				.Project(x => new PlayerStatsView() {
+				.Project(x => new PlayerStatsView()
+				{
 					Username = x.Username,
 					Pizzeria = x.Pizzeria,
 					Accuracy = x.MultiStats.PinpointAccuracy / x.MultiStats.Dropped,
@@ -318,6 +323,18 @@ namespace PizzeonAzureFunctions {
 					PlayTime = x.MultiStats.OverallGameTime
 				});
 			return await aggregate.ToListAsync();
+		}
+
+		public static Task CreatePlayerToken(PlayerAuthorizationToken token) {
+			var filter = Builders<PlayerAuthorizationToken>.Filter.Eq("PlayerId", token.PlayerId);
+			return TokenCollection.ReplaceOneAsync(filter, token, new UpdateOptions() {IsUpsert = true });
+		}
+
+		public static async Task<PlayerAuthorizationToken> GetPlayerToken(Guid playerId) {
+			var filter = Builders<PlayerAuthorizationToken>.Filter.Eq("PlayerId", playerId);
+			var cursor = await TokenCollection.FindAsync(filter);
+			PlayerAuthorizationToken token = cursor.Single();
+			return token;
 		}
 	}
 }

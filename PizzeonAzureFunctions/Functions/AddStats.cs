@@ -15,11 +15,16 @@ namespace PizzeonAzureFunctions.Functions
         [FunctionName("AddStats")]
         public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "players/{playerId}/stats/{type}")]HttpRequestMessage req, TraceWriter log, string playerId, string type)
         {
+			
 			if (!Guid.TryParse(playerId, out Guid id)) {
 		        return req.CreateResponse(HttpStatusCode.BadRequest, "Given Guid is not valid");
 	        }
 
-	        if (type == "single") {
+			if (!await SecurityManager.CheckSecurityTokenValid(req, log, id)) {
+				return req.CreateResponse(HttpStatusCode.Unauthorized, "Security token is not valid");
+			}
+
+			if (type == "single") {
 
 		        dynamic data = await req.Content.ReadAsAsync<SessionStatsSingle>();
 		        if (data == null) {
