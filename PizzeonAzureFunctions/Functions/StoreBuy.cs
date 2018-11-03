@@ -27,15 +27,15 @@ namespace PizzeonAzureFunctions.Functions
 		        int price = 0;
 		        switch (type) {
 			        case ("hat"):
-				        var hat = await MongoDbRepository.GetHat(itemId);
+				        var hat = await MongoDbRepository.GetHat(itemId, log);
 				        price = hat.Price;
 				        break;
 			        case ("color"):
-						var color = await MongoDbRepository.GetColor(itemId);
+						var color = await MongoDbRepository.GetColor(itemId, log);
 				        price = color.Price;
 						break;
 			        case ("avatar"):
-						var avatar = await MongoDbRepository.GetAvatar(itemId);
+						var avatar = await MongoDbRepository.GetAvatar(itemId, log);
 				        price = avatar.Price;
 						break;
 			        default:
@@ -61,8 +61,7 @@ namespace PizzeonAzureFunctions.Functions
 							break;
 					}
 
-			        await dTask;
-			        await aTask;
+			        await Task.WhenAll(dTask, aTask);
 
 			        return req.CreateResponse(HttpStatusCode.OK);
 				}
