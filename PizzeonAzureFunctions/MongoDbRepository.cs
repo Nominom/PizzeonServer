@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Caching;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Azure.WebJobs.Host;
 using MongoDB.Driver;
 using Pizzeon_server.Models;
 
 namespace PizzeonAzureFunctions
 {
-	public static class MongoDbRepository
-	{
+	public static class MongoDbRepository {
+
+		private static MemoryCache _cache = MemoryCache.Default;
 
 		public const string DbName = "pizzeon";
 
@@ -103,22 +106,55 @@ namespace PizzeonAzureFunctions
 			}
 		}
 
-		public static async Task<Avatar[]> GetAllAvatars() {
-			var filter = Builders<Avatar>.Filter.Empty;
-			var cursor = await AvatarCollection.FindAsync(filter);
-			return cursor.ToList().ToArray();
+		public static async Task<Avatar[]> GetAllAvatars(TraceWriter log) {
+			const string cacheKey = "allAvatars";
+			Avatar[] avatars = _cache[cacheKey] as Avatar[];
+			if (avatars == null) {
+				var filter = Builders<Avatar>.Filter.Empty;
+				var cursor = await AvatarCollection.FindAsync(filter);
+				avatars = cursor.ToList().ToArray();
+				_cache.Add(cacheKey, avatars, DateTimeOffset.Now.AddHours(1));
+				log.Info("Populating the cache with avatars from database");
+
+			} else {
+				log.Info("Using a cached instance of avatars");
+			}
+
+			return avatars;
 		}
 
-		public static async Task<Color[]> GetAllColors() {
-			var filter = Builders<Color>.Filter.Empty;
-			var cursor = await ColorCollection.FindAsync(filter);
-			return cursor.ToList().ToArray();
+		public static async Task<Color[]> GetAllColors (TraceWriter log) {
+			const string cacheKey = "allColors";
+			Color[] colors = _cache[cacheKey] as Color[];
+			if (colors == null) {
+				var filter = Builders<Color>.Filter.Empty;
+				var cursor = await ColorCollection.FindAsync(filter);
+				colors = cursor.ToList().ToArray();
+				_cache.Add(cacheKey, colors, DateTimeOffset.Now.AddHours(1));
+				log.Info("Populating the cache with colors from database");
+
+			} else {
+				log.Info("Using a cached instance of colors");
+			}
+
+			return colors;
 		}
 
-		public static async Task<Hat[]> GetAllHats() {
-			var filter = Builders<Hat>.Filter.Empty;
-			var cursor = await HatCollection.FindAsync(filter);
-			return cursor.ToList().ToArray();
+		public static async Task<Hat[]> GetAllHats (TraceWriter log) {
+			const string cacheKey = "allHats";
+			Hat[] hats = _cache[cacheKey] as Hat[];
+			if (hats == null) {
+				var filter = Builders<Hat>.Filter.Empty;
+				var cursor = await HatCollection.FindAsync(filter);
+				hats = cursor.ToList().ToArray();
+				_cache.Add(cacheKey, hats, DateTimeOffset.Now.AddHours(1));
+				log.Info("Populating the cache with hats from database");
+
+			} else {
+				log.Info("Using a cached instance of hats");
+			}
+
+			return hats;
 		}
 
 		public static Task CreateInventory(Inventory inventory) {
