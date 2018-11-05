@@ -18,9 +18,10 @@ namespace Pizzeon_server.Controllers {
 			_processor = inventoryProcessor;
 		}
 
-		[HttpPut("hat")]
-		public ActionResult EquipHat([FromBody] ItemTransaction transaction) {
-			if (_processor.EquipHat(transaction.playerId, transaction.itemId)) {
+		[HttpPost("hat/{itemId}/equip/{playerId}")]
+		[PlayerAuth("playerId")]
+		public ActionResult EquipHat(Guid playerId, string itemId) {
+			if (_processor.EquipHat(playerId, itemId)) {
 				return Ok("Item equipped");
 			}
 			else {
@@ -28,21 +29,36 @@ namespace Pizzeon_server.Controllers {
 			}
 		}
 
-		[HttpPut("avatar")]
-		public ActionResult EquipAvatar ([FromBody] ItemTransaction transaction) {
-			if (_processor.EquipAvatar(transaction.playerId, transaction.itemId)) {
+		[HttpPost("avatar/{itemId}/equip/{playerId}")]
+		[PlayerAuth("playerId")]
+		public ActionResult EquipAvatar (Guid playerId, string itemId) {
+			if (_processor.EquipAvatar(playerId, itemId)) {
 				return Ok("Item equipped");
 			} else {
 				return UnprocessableEntity("Player not found or player doesn't own item");
 			}
 		}
 
-		[HttpPut("color")]
-		public ActionResult EquipColor ([FromBody] ItemTransaction transaction) {
-			if (_processor.EquipColor(transaction.playerId, transaction.itemId)) {
+		[HttpPost("color/{itemId}/equip/{playerId}")]
+		[PlayerAuth("playerId")]
+		public ActionResult EquipColor (Guid playerId, string itemId) {
+			if (_processor.EquipColor(playerId, itemId)) {
 				return Ok("Item equipped");
 			} else {
 				return UnprocessableEntity("Player not found or player doesn't own item");
+			}
+		}
+
+		[HttpGet("{playerId}")]
+		[PlayerAuth("playerId")]
+		public ActionResult GetInventory(Guid playerId) {
+			var inventory = _processor.GetInventory(playerId).Result;
+
+			if (inventory == null) {
+				return UnprocessableEntity("Bad inventory query.");
+			}
+			else {
+				return new JsonResult(inventory);
 			}
 		}
 	}

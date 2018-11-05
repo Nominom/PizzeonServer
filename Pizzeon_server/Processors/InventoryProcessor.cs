@@ -14,14 +14,20 @@ namespace Pizzeon_server.Processors
             _repository = repository;
         }
 
-        public void CreateInventory (Guid PlayerId) 
+        public void CreateInventory (Guid playerId) 
         {
             Inventory inventory = new Inventory();
-            inventory.PlayerId = PlayerId;
+            inventory.PlayerId = playerId;
             inventory.OwnedAvatars = new List<string>();
             inventory.OwnedColors = new List<string>();
             inventory.OwnedHats = new List<string>();
-            _repository.CreateInventory(inventory);
+
+			//Add default hat, color and avatar to player inventory
+			inventory.OwnedHats.Add("0");
+			inventory.OwnedColors.Add("0");
+			inventory.OwnedAvatars.Add("0");
+
+			_repository.CreateInventory(inventory);
         }
 
 	    public bool EquipHat(Guid playerId, string hatId) {
@@ -35,19 +41,23 @@ namespace Pizzeon_server.Processors
 				}
 		    }
 		    catch (Exception ex) {
-			    return false;
+			    Console.WriteLine(ex);
+				return false;
 		    }
 		}
 
 	    public bool EquipAvatar (Guid playerId, string avatarId) {
 			try {
 				if (_repository.InventoryHasAvatar(playerId, avatarId).Result) {
+					Console.WriteLine("Found the avatar!");
 					_repository.EquipAvatar(playerId, avatarId);
 					return true;
 				} else {
+					Console.WriteLine("Could not find avatar!");
 					return false;
 				}
 			} catch (Exception ex) {
+				Console.WriteLine(ex);
 				return false;
 			}
 		}
@@ -61,33 +71,34 @@ namespace Pizzeon_server.Processors
 					return false;
 				}
 			} catch (Exception ex) {
+				Console.WriteLine(ex);
 				return false;
 			}
 		}
 
-		public void AddHatToInventory (Guid PlayerId, string HatId) 
+		public void AddHatToInventory (Guid playerId, string hatId) 
         {
-            _repository.AddHatToInventory(PlayerId, HatId);
+            _repository.AddHatToInventory(playerId, hatId);
         }
 
-        public void AddColorToInventory (Guid PlayerId, string ColorId) 
+        public void AddColorToInventory (Guid playerId, string colorId) 
         {
-            _repository.AddColorToInventory(PlayerId, ColorId);
+            _repository.AddColorToInventory(playerId, colorId);
         }
 
-        public void AddAvatarToInventory (Guid PlayerId, string AvatarId) 
+        public void AddAvatarToInventory (Guid playerId, string avatarId) 
         {
-            _repository.AddAvatarToInventory(PlayerId, AvatarId);
+            _repository.AddAvatarToInventory(playerId, avatarId);
         }
 
-        public Task<Inventory> GetInventory (Guid PlayerId) 
+        public Task<Inventory> GetInventory (Guid playerId) 
         {
-            return _repository.GetInventory(PlayerId);
+            return _repository.GetInventory(playerId);
         }
 
-        public void RemoveInventory (Guid PlayerId) 
+        public void RemoveInventory (Guid playerId) 
         {
-            _repository.RemoveInventory(PlayerId);
-        }
-    }
+            _repository.RemoveInventory(playerId);
+		}
+	}
 }

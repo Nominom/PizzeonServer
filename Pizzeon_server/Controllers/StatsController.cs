@@ -32,17 +32,17 @@ namespace Pizzeon_server.Controllers
         }
 
         [HttpPost("single")]
-		[PlayerAuth("playerid")]
-        public void AddStatsSingle(Guid playerid, [FromBody]SessionStatsSingle stats)
+		[PlayerAuth("playerId")]
+        public void AddStatsSingle(Guid playerId, [FromBody]SessionStatsSingle stats)
         {
-            _processor.AddStatsSingle(playerid, stats);
+            _processor.AddStatsSingle(playerId, stats);
         }
 
         [HttpPost("multi")]
-        [PlayerAuth("playerid")]
-		public void AddStatsMulti(Guid playerid, [FromBody]SessionStatsMulti stats)
+        [PlayerAuth("playerId")]
+		public void AddStatsMulti(Guid playerId, [FromBody]SessionStatsMulti stats)
         {
-            _processor.AddStatsMulti(playerid, stats);
+            _processor.AddStatsMulti(playerId, stats);
         }
     }
 }

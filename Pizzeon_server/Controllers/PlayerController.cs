@@ -19,7 +19,7 @@ namespace Pizzeon_server.Controllers
             _playerProcessor = playerProcessor;
         }
 
-		// POST api/values
+		// POST api/players
 		[HttpPost]
 		public ActionResult CreatePlayer ([FromBody] NewPlayer newPlayer) {
 			if (_playerProcessor.CreatePlayer(newPlayer)) {
