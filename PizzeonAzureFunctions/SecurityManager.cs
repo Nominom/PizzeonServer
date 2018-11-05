@@ -12,8 +12,7 @@ namespace PizzeonAzureFunctions
 {
 	public static class SecurityManager
 	{
-		private static readonly MemoryCache Cache = MemoryCache.Default;
-
+		/*
 		public static async Task AddSecurityToken(PlayerAuthorizationToken token) {
 			Cache.Set(TokenCacheKey(token), token.ApiKey, DateTimeOffset.Now.AddHours(1));
 			await MongoDbRepository.CreatePlayerToken(token);
@@ -55,6 +54,36 @@ namespace PizzeonAzureFunctions
 
 		private static string TokenCacheKey (Guid playerId) {
 			return "token_" + playerId.ToString();
+		}*/
+
+
+		public static PlayerAuthorizationToken CreateAuthorizationToken (Guid playerId) {
+			PlayerAuthorizationToken token = new PlayerAuthorizationToken();
+			token.PlayerId = playerId;
+			token.ApiKey = AuthClaims.GenerateToken(playerId);
+			return token;
+		}
+
+		public static bool CheckSecurityTokenValid(HttpRequestMessage req, TraceWriter log, Guid playerId) {
+			if (req.Headers.TryGetValues("player_auth_key", out IEnumerable<string> values)) {
+				//Get token from header
+				var token = values.FirstOrDefault();
+				if (string.IsNullOrEmpty(token))
+					return false;
+
+				//Get playerId in token from token string
+				var tokenId = AuthClaims.GetValidUserIdFromToken(token);
+				if (string.IsNullOrEmpty(tokenId))
+					return false;
+				
+				//check if token playerId matches with provided playerId
+				if (tokenId.Equals(playerId.ToString())) {
+					log.Info("Valid token for playerid: "+playerId);
+					return true;
+				}
+			}
+			//return false if tokens didn't match or header contained no auth key
+			return false;
 		}
 	}
 }

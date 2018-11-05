@@ -19,7 +19,7 @@ namespace PizzeonAzureFunctions.Functions
 		        return req.CreateResponse(HttpStatusCode.BadRequest, "Given Guid is not valid");
 			}
 
-			if (!await SecurityManager.CheckSecurityTokenValid(req, log, pId)) {
+			if (!SecurityManager.CheckSecurityTokenValid(req, log, pId)) {
 				return req.CreateResponse(HttpStatusCode.Unauthorized, "Security token is not valid");
 			}
 
