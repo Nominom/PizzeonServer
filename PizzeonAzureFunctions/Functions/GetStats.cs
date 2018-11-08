@@ -18,7 +18,11 @@ namespace PizzeonAzureFunctions.Functions
 		        return req.CreateResponse(HttpStatusCode.BadRequest, "Given Guid is not valid");
 			}
 
-	        if (type == "single") {
+	        if (!SecurityManager.CheckSecurityTokenValid(req, log, id)) {
+		        return req.CreateResponse(HttpStatusCode.Unauthorized, "Security token is not valid");
+	        }
+
+			if (type == "single") {
 		        var stats = await MongoDbRepository.GetSingleStats(id);
 		        if (stats == null) {
 			        return req.CreateResponse(HttpStatusCode.NotFound, "No stats found with playerId");

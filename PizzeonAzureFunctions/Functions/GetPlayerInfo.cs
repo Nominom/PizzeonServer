@@ -19,8 +19,18 @@ namespace PizzeonAzureFunctions.Functions
 				return req.CreateResponse(HttpStatusCode.BadRequest, "Given Guid is not valid");
 			}
 
+	        if (!SecurityManager.CheckSecurityTokenValid(req, log, id)) {
+		        return req.CreateResponse(HttpStatusCode.Unauthorized, "Security token is not valid");
+	        }
+
 			try {
-		        var player = await MongoDbRepository.GetPlayer(id);
+				var pTask = MongoDbRepository.GetPlayer(id);
+				var iTask = MongoDbRepository.GetInventory(id);
+
+				await Task.WhenAll(pTask, iTask);
+				var player = pTask.Result;
+				var inventory = iTask.Result;
+
 				PlayerInfo info = new PlayerInfo {
 					Id = player.Id,
 					Username = player.Username,
@@ -29,10 +39,11 @@ namespace PizzeonAzureFunctions.Functions
 					Color = player.Color,
 					Money = player.Money,
 					Pizzeria = player.Pizzeria,
-					Inventory = await MongoDbRepository.GetInventory(id)
-			};
+					Inventory = inventory
+				};
 				return req.CreateResponse(HttpStatusCode.OK, info);
-	        } catch (Exception) {
+	        } catch (Exception ex) {
+				log.Error(ex+ "\nPlayer ID: " + id);
 		        return req.CreateResponse(HttpStatusCode.NotFound, "No info found with playerId");
 			}
 
