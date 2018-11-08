@@ -28,8 +28,9 @@ namespace PizzeonAzureFunctions.Functions
 					Hat = player.Hat,
 					Color = player.Color,
 					Money = player.Money,
-					Pizzeria = player.Pizzeria
-				};
+					Pizzeria = player.Pizzeria,
+					Inventory = await MongoDbRepository.GetInventory(id)
+			};
 				return req.CreateResponse(HttpStatusCode.OK, info);
 	        } catch (Exception) {
 		        return req.CreateResponse(HttpStatusCode.NotFound, "No info found with playerId");

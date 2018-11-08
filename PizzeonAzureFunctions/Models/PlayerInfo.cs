@@ -12,5 +12,6 @@ namespace Pizzeon_server.Models {
 		public string Hat { get; set; }
 		public int Money { get; set; }
 		public string Pizzeria { get; set; }
+		public Inventory Inventory { get; set; }
 	}
 }
