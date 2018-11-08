@@ -10,13 +10,13 @@ namespace Pizzeon_server.Models {
 		[BsonId] 
 		public Guid PlayerId { get; set; }
 		public string ApiKey { get; set; }
-
+		/*
 		public static PlayerAuthorizationToken Create(Guid playerId) {
 			var token = new PlayerAuthorizationToken {
 				ApiKey = StaticHelpers.GetRandomSalt(),
 				PlayerId = playerId
 			};
 			return token;
-		}
+		}*/
 	}
 }

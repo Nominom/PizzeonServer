@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Caching;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Azure.WebJobs.Host;
 using MongoDB.Driver;
 using Pizzeon_server.Models;
 
 namespace PizzeonAzureFunctions
 {
-	public static class MongoDbRepository
-	{
+	public static class MongoDbRepository {
+
+		private static readonly MemoryCache Cache = MemoryCache.Default;
 
 		public const string DbName = "pizzeon";
 
@@ -103,22 +106,55 @@ namespace PizzeonAzureFunctions
 			}
 		}
 
-		public static async Task<Avatar[]> GetAllAvatars() {
-			var filter = Builders<Avatar>.Filter.Empty;
-			var cursor = await AvatarCollection.FindAsync(filter);
-			return cursor.ToList().ToArray();
+		public static async Task<Avatar[]> GetAllAvatars(TraceWriter log) {
+			const string cacheKey = "allAvatars";
+			Avatar[] avatars = Cache[cacheKey] as Avatar[];
+			if (avatars == null) {
+				var filter = Builders<Avatar>.Filter.Empty;
+				var cursor = await AvatarCollection.FindAsync(filter);
+				avatars = cursor.ToList().ToArray();
+				Cache.Add(cacheKey, avatars, DateTimeOffset.Now.AddHours(1));
+				log.Info("Populating the cache with avatars from database");
+
+			} else {
+				log.Info("Using a cached instance of avatars");
+			}
+
+			return avatars;
 		}
 
-		public static async Task<Color[]> GetAllColors() {
-			var filter = Builders<Color>.Filter.Empty;
-			var cursor = await ColorCollection.FindAsync(filter);
-			return cursor.ToList().ToArray();
+		public static async Task<Color[]> GetAllColors (TraceWriter log) {
+			const string cacheKey = "allColors";
+			Color[] colors = Cache[cacheKey] as Color[];
+			if (colors == null) {
+				var filter = Builders<Color>.Filter.Empty;
+				var cursor = await ColorCollection.FindAsync(filter);
+				colors = cursor.ToList().ToArray();
+				Cache.Add(cacheKey, colors, DateTimeOffset.Now.AddHours(1));
+				log.Info("Populating the cache with colors from database");
+
+			} else {
+				log.Info("Using a cached instance of colors");
+			}
+
+			return colors;
 		}
 
-		public static async Task<Hat[]> GetAllHats() {
-			var filter = Builders<Hat>.Filter.Empty;
-			var cursor = await HatCollection.FindAsync(filter);
-			return cursor.ToList().ToArray();
+		public static async Task<Hat[]> GetAllHats (TraceWriter log) {
+			const string cacheKey = "allHats";
+			Hat[] hats = Cache[cacheKey] as Hat[];
+			if (hats == null) {
+				var filter = Builders<Hat>.Filter.Empty;
+				var cursor = await HatCollection.FindAsync(filter);
+				hats = cursor.ToList().ToArray();
+				Cache.Add(cacheKey, hats, DateTimeOffset.Now.AddHours(1));
+				log.Info("Populating the cache with hats from database");
+
+			} else {
+				log.Info("Using a cached instance of hats");
+			}
+
+			return hats;
 		}
 
 		public static Task CreateInventory(Inventory inventory) {
@@ -192,25 +228,19 @@ namespace PizzeonAzureFunctions
 			await PlayerCollection.UpdateOneAsync(filter, update);
 		}
 
-		public static async Task<Avatar> GetAvatar(string id) {
-			var filter = Builders<Avatar>.Filter.Eq("Id", id);
-			var cursor = await AvatarCollection.FindAsync(filter);
-			Avatar avatar = cursor.Single();
-			return avatar;
+		public static async Task<Avatar> GetAvatar(string id, TraceWriter log) {
+			var avatars = await GetAllAvatars(log);
+			return avatars.Single(x => x.Id == id);
 		}
 
-		public static async Task<Color> GetColor(string id) {
-			var filter = Builders<Color>.Filter.Eq("Id", id);
-			var cursor = await ColorCollection.FindAsync(filter);
-			Color color = cursor.Single();
-			return color;
+		public static async Task<Color> GetColor(string id, TraceWriter log) {
+			var colors = await GetAllColors(log);
+			return colors.Single(x => x.Id == id);
 		}
 
-		public static async Task<Hat> GetHat(string id) {
-			var filter = Builders<Hat>.Filter.Eq("Id", id);
-			var cursor = await HatCollection.FindAsync(filter);
-			Hat hat = cursor.Single();
-			return hat;
+		public static async Task<Hat> GetHat(string id, TraceWriter log) {
+			var hats = await GetAllHats(log);
+			return hats.Single(x => x.Id == id);
 		}
 
 
@@ -280,8 +310,19 @@ namespace PizzeonAzureFunctions
 			await PlayerCollection.UpdateOneAsync(filter, update);
 		}
 
+		public static async Task<IEnumerable<PlayerStatsView>> GetTopPlayerStatsSingle (int number, int page) {
+			string cacheKey = $"topSingle_{number}_{page}";
+			IEnumerable<PlayerStatsView> topPlayers = Cache[cacheKey] as IEnumerable<PlayerStatsView>;
+			if (topPlayers == null) {
+				topPlayers = await DbGetTopPlayerStatsSingle(number, page);
+				Cache.Set(cacheKey, topPlayers, DateTimeOffset.Now.AddMinutes(30));
+			}
 
-		public static async Task<IEnumerable<PlayerStatsView>> GetTopPlayerStatsSingle(int number, int page) {
+			return topPlayers;
+		}
+
+
+		private static async Task<IEnumerable<PlayerStatsView>> DbGetTopPlayerStatsSingle(int number, int page) {
 			var sort = Builders<Player>.Sort.Descending(x => x.SingleStats.BestPoints);
 			var aggregate = PlayerCollection.Aggregate()
 				.Sort(sort)
@@ -303,7 +344,18 @@ namespace PizzeonAzureFunctions
 			return await aggregate.ToListAsync();
 		}
 
-		public static async Task<IEnumerable<PlayerStatsView>> GetTopPlayerStatsMulti(int number, int page) {
+		public static async Task<IEnumerable<PlayerStatsView>> GetTopPlayerStatsMulti (int number, int page) {
+			string cacheKey = $"topMulti_{number}_{page}";
+			IEnumerable<PlayerStatsView> topPlayers = Cache[cacheKey] as IEnumerable<PlayerStatsView>;
+			if (topPlayers == null) {
+				topPlayers = await DbGetTopPlayerStatsMulti(number, page);
+				Cache.Set(cacheKey, topPlayers, DateTimeOffset.Now.AddMinutes(30));
+			}
+
+			return topPlayers;
+		}
+
+		private static async Task<IEnumerable<PlayerStatsView>> DbGetTopPlayerStatsMulti(int number, int page) {
 			var sort = Builders<Player>.Sort.Descending(x => x.MultiStats.BestPoints);
 			var aggregate = PlayerCollection.Aggregate()
 				.Sort(sort)

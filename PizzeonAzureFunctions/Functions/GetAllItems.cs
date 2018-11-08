@@ -16,13 +16,13 @@ namespace PizzeonAzureFunctions.Functions
             log.Info("Getting all things");
 	        switch (type) {
 				case "hat":
-					var hats = await MongoDbRepository.GetAllHats();
+					var hats = await MongoDbRepository.GetAllHats(log);
 					return req.CreateResponse(HttpStatusCode.OK, hats);
 		        case "color":
-			        var colors = await MongoDbRepository.GetAllColors();
+			        var colors = await MongoDbRepository.GetAllColors(log);
 			        return req.CreateResponse(HttpStatusCode.OK, colors);
 		        case "avatar":
-			        var avatars = await MongoDbRepository.GetAllAvatars();
+			        var avatars = await MongoDbRepository.GetAllAvatars(log);
 			        return req.CreateResponse(HttpStatusCode.OK, avatars);
 				default:
 					return req.CreateResponse(HttpStatusCode.NotFound);

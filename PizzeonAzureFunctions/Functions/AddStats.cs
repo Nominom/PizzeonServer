@@ -20,7 +20,7 @@ namespace PizzeonAzureFunctions.Functions
 		        return req.CreateResponse(HttpStatusCode.BadRequest, "Given Guid is not valid");
 	        }
 
-			if (!await SecurityManager.CheckSecurityTokenValid(req, log, id)) {
+			if (!SecurityManager.CheckSecurityTokenValid(req, log, id)) {
 				return req.CreateResponse(HttpStatusCode.Unauthorized, "Security token is not valid");
 			}
 
@@ -33,7 +33,9 @@ namespace PizzeonAzureFunctions.Functions
 
 				try {
 					await MongoDbRepository.AddStatsSingle(id, data);
-				} catch (Exception ex) {
+                    int coin = (int)(data.Points * 0.05);
+                    await MongoDbRepository.AddCoinToPlayer(id, coin);
+                } catch (Exception ex) {
 					return req.CreateResponse(HttpStatusCode.BadRequest, "An error occurred");
 				}
 
@@ -47,7 +49,9 @@ namespace PizzeonAzureFunctions.Functions
 
 		        try {
 			        await MongoDbRepository.AddStatsMulti(id, data);
-		        }
+                    int coin = (int)(data.Points * 0.10);
+                    await MongoDbRepository.AddCoinToPlayer(id, coin);
+                    log.Info("give money");                }
 		        catch (Exception ex) {
 			        return req.CreateResponse(HttpStatusCode.BadRequest, "An error occurred");
 				}
