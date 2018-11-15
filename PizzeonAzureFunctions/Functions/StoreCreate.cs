@@ -26,9 +26,10 @@ namespace PizzeonAzureFunctions.Functions
 			        Hat hat = new Hat();
 			        hat.Name = newHat.Name;
 			        hat.Id = newHat.Id;
-			        hat.Description = newHat.Description;
 			        hat.Price = newHat.Price;
-			        await MongoDbRepository.CreateHat(hat);
+			        hat.Description = newHat.Description;
+
+					await MongoDbRepository.CreateHat(hat);
 					return req.CreateResponse(HttpStatusCode.OK);
 		        case "color":
 			        dynamic newColor = await req.Content.ReadAsAsync<NewColor>();
@@ -40,6 +41,7 @@ namespace PizzeonAzureFunctions.Functions
 			        color.Name = newColor.Name;
 			        color.Id = newColor.Id;
 			        color.Price = newColor.Price;
+			        color.Description = newColor.Description;
 			        await MongoDbRepository.CreateColor(color);
 
 					return req.CreateResponse(HttpStatusCode.OK);
@@ -53,7 +55,8 @@ namespace PizzeonAzureFunctions.Functions
 			        avatar.Name = newAvatar.Name;
 			        avatar.Id = newAvatar.Id;
 			        avatar.Price = newAvatar.Price;
-			        await MongoDbRepository.CreateAvatar(avatar);
+			        avatar.Description = avatar.Description;
+					await MongoDbRepository.CreateAvatar(avatar);
 
 					return req.CreateResponse(HttpStatusCode.OK);
 		        default:
