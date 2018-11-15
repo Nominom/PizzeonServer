@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Host;
+using Newtonsoft.Json;
 using Pizzeon_server.Models;
 
 namespace PizzeonAzureFunctions.Functions
@@ -15,10 +16,12 @@ namespace PizzeonAzureFunctions.Functions
         public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Admin, "post", Route = "store/{type}")]HttpRequestMessage req, TraceWriter log, string type)
         {
             log.Info("Creating a new store item");
+			log.Info(req.ToString());
 
 	        switch (type) {
 		        case "hat":
 			        dynamic newHat = await req.Content.ReadAsAsync<NewHat>();
+			        log.Info(JsonConvert.SerializeObject(newHat));
 			        if (newHat == null) {
 				        return req.CreateResponse(HttpStatusCode.BadRequest, "Please pass a valid json object in the body");
 			        }
@@ -33,7 +36,8 @@ namespace PizzeonAzureFunctions.Functions
 					return req.CreateResponse(HttpStatusCode.OK);
 		        case "color":
 			        dynamic newColor = await req.Content.ReadAsAsync<NewColor>();
-			        if (newColor == null) {
+			        log.Info(JsonConvert.SerializeObject(newColor));
+					if (newColor == null) {
 				        return req.CreateResponse(HttpStatusCode.BadRequest, "Please pass a valid json object in the body");
 			        }
 
@@ -47,7 +51,9 @@ namespace PizzeonAzureFunctions.Functions
 					return req.CreateResponse(HttpStatusCode.OK);
 		        case "avatar":
 			        dynamic newAvatar = await req.Content.ReadAsAsync<NewAvatar>();
-			        if (newAvatar == null) {
+			        log.Info(JsonConvert.SerializeObject(newAvatar));
+
+					if (newAvatar == null) {
 				        return req.CreateResponse(HttpStatusCode.BadRequest, "Please pass a valid json object in the body");
 			        }
 
