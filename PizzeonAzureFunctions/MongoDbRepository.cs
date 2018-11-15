@@ -168,25 +168,25 @@ namespace PizzeonAzureFunctions
 			return inventory;
 		}
 
-		public static async Task AddAvatarToInventory(Guid playerid, string avatarid) {
+		public static async Task AddAvatarToInventory(Guid playerid, int avatarid) {
 			var filter = Builders<Inventory>.Filter.Eq("PlayerId", playerid);
 			var update = Builders<Inventory>.Update.AddToSet("OwnedAvatars", avatarid);
 			await InventoryCollection.UpdateOneAsync(filter, update);
 		}
 
-		public static async Task AddColorToInventory(Guid playerid, string colorid) {
+		public static async Task AddColorToInventory(Guid playerid, int colorid) {
 			var filter = Builders<Inventory>.Filter.Eq("PlayerId", playerid);
 			var update = Builders<Inventory>.Update.AddToSet("OwnedColors", colorid);
 			await InventoryCollection.UpdateOneAsync(filter, update);
 		}
 
-		public static async Task AddHatToInventory(Guid playerid, string hatid) {
+		public static async Task AddHatToInventory(Guid playerid, int hatid) {
 			var filter = Builders<Inventory>.Filter.Eq("PlayerId", playerid);
 			var update = Builders<Inventory>.Update.AddToSet("OwnedHats", hatid);
 			await InventoryCollection.UpdateOneAsync(filter, update);
 		}
 
-		public static async Task<bool> InventoryHasHat(Guid playerId, string hatId) {
+		public static async Task<bool> InventoryHasHat(Guid playerId, int hatId) {
 			var filter = Builders<Inventory>.Filter.And(
 				Builders<Inventory>.Filter.Eq("PlayerId", playerId),
 				Builders<Inventory>.Filter.Where(x => x.OwnedHats.Contains(hatId)));
@@ -194,7 +194,7 @@ namespace PizzeonAzureFunctions
 			return (await InventoryCollection.FindAsync(filter)).Any();
 		}
 
-		public static async Task<bool> InventoryHasAvatar(Guid playerId, string avatarId) {
+		public static async Task<bool> InventoryHasAvatar(Guid playerId, int avatarId) {
 			var filter = Builders<Inventory>.Filter.And(
 				Builders<Inventory>.Filter.Eq("PlayerId", playerId),
 				Builders<Inventory>.Filter.Where(x => x.OwnedAvatars.Contains(avatarId)));
@@ -202,7 +202,7 @@ namespace PizzeonAzureFunctions
 			return (await InventoryCollection.FindAsync(filter)).Any();
 		}
 
-		public static async Task<bool> InventoryHasColor(Guid playerId, string colorId) {
+		public static async Task<bool> InventoryHasColor(Guid playerId, int colorId) {
 			var filter = Builders<Inventory>.Filter.And(
 				Builders<Inventory>.Filter.Eq("PlayerId", playerId),
 				Builders<Inventory>.Filter.Where(x => x.OwnedColors.Contains(colorId)));
@@ -210,35 +210,35 @@ namespace PizzeonAzureFunctions
 			return (await InventoryCollection.FindAsync(filter)).Any();
 		}
 
-		public static async Task EquipHat(Guid playerId, string hatId) {
+		public static async Task EquipHat(Guid playerId, int hatId) {
 			var filter = Builders<Player>.Filter.Eq("Id", playerId);
 			var update = Builders<Player>.Update.Set("Hat", hatId);
 			await PlayerCollection.UpdateOneAsync(filter, update);
 		}
 
-		public static async Task EquipAvatar(Guid playerId, string avatarId) {
+		public static async Task EquipAvatar(Guid playerId, int avatarId) {
 			var filter = Builders<Player>.Filter.Eq("Id", playerId);
 			var update = Builders<Player>.Update.Set("Avatar", avatarId);
 			await PlayerCollection.UpdateOneAsync(filter, update);
 		}
 
-		public static async Task EquipColor(Guid playerId, string colorId) {
+		public static async Task EquipColor(Guid playerId, int colorId) {
 			var filter = Builders<Player>.Filter.Eq("Id", playerId);
 			var update = Builders<Player>.Update.Set("Color", colorId);
 			await PlayerCollection.UpdateOneAsync(filter, update);
 		}
 
-		public static async Task<Avatar> GetAvatar(string id, TraceWriter log) {
+		public static async Task<Avatar> GetAvatar(int id, TraceWriter log) {
 			var avatars = await GetAllAvatars(log);
 			return avatars.Single(x => x.Id == id);
 		}
 
-		public static async Task<Color> GetColor(string id, TraceWriter log) {
+		public static async Task<Color> GetColor(int id, TraceWriter log) {
 			var colors = await GetAllColors(log);
 			return colors.Single(x => x.Id == id);
 		}
 
-		public static async Task<Hat> GetHat(string id, TraceWriter log) {
+		public static async Task<Hat> GetHat(int id, TraceWriter log) {
 			var hats = await GetAllHats(log);
 			return hats.Single(x => x.Id == id);
 		}

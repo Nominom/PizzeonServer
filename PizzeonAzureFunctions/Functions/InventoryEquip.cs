@@ -12,7 +12,7 @@ namespace PizzeonAzureFunctions.Functions
     public static class InventoryEquip
     {
         [FunctionName("InventoryEquip")]
-        public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "inventory/{type}/{itemId}/equip/{playerId}")]HttpRequestMessage req, TraceWriter log, string type, string itemId, string playerId)
+        public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "inventory/{type}/{itemId:int}/equip/{playerId}")]HttpRequestMessage req, TraceWriter log, string type, int itemId, string playerId)
         {
 	        if (!Guid.TryParse(playerId, out Guid pId)) {
 		        return req.CreateResponse(HttpStatusCode.BadRequest, "Given Guid is not valid");

@@ -35,9 +35,9 @@ namespace PizzeonAzureFunctions
 	        player.Password = StaticHelpers.EncodePasswordToBase64(data.Password + player.PasswordSalt);
 	        player.Id = Guid.NewGuid();
 	        player.CreationTime = System.DateTime.Now;
-	        player.Hat = "0";
-	        player.Color = "0";
-	        player.Avatar = "0";
+	        player.Hat = 0;
+	        player.Color = 0;
+	        player.Avatar = 0;
 	        player.Money = 0;
 	        string pizzeriaUsername = player.Username.First().ToString().ToUpper() + player.Username.Substring(1);
 	        player.Pizzeria = pizzeriaUsername + "'s Pizzeria";

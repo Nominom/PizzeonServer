@@ -10,9 +10,9 @@ namespace Pizzeon_server.Models {
 		public string Password { get; set; }
 		public string PasswordSalt { get; set; }
 		public string Username { get; set; }
-		public string Avatar { get; set; }
-		public string Color { get; set; }
-		public string Hat { get; set; }
+		public int Avatar { get; set; }
+		public int Color { get; set; }
+		public int Hat { get; set; }
 		public int Money { get; set; }
 		public string Pizzeria { get; set; }
 		public PlayerStatsSingle SingleStats { get; set; }
