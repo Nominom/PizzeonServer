@@ -26,8 +26,7 @@ namespace PizzeonAzureFunctions.Functions
 				Player player = MongoDbRepository.GetPlayerByName(data.Username).Result;
 
 				if (player.Password == StaticHelpers.EncodePasswordToBase64(data.Password + player.PasswordSalt)) {
-					var token = PlayerAuthorizationToken.Create(player.Id);
-					await SecurityManager.AddSecurityToken(token);
+					var token = SecurityManager.CreateAuthorizationToken(player.Id);
 					return req.CreateResponse(HttpStatusCode.OK, token);
 
 				} else {

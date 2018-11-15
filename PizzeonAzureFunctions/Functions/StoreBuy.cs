@@ -13,13 +13,13 @@ namespace PizzeonAzureFunctions.Functions
     public static class StoreBuy
     {
         [FunctionName("StoreBuy")]
-        public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "store/{type}/{itemId}/buy/{playerId}")]HttpRequestMessage req, TraceWriter log, string type, string itemId, string playerId)
+        public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "store/{type}/{itemId:int}/buy/{playerId}")]HttpRequestMessage req, TraceWriter log, string type, int itemId, string playerId)
         {
 			if (!Guid.TryParse(playerId, out Guid pId)) {
 		        return req.CreateResponse(HttpStatusCode.BadRequest, "Given Guid is not valid");
 			}
 
-			if (!await SecurityManager.CheckSecurityTokenValid(req, log, pId)) {
+			if (!SecurityManager.CheckSecurityTokenValid(req, log, pId)) {
 				return req.CreateResponse(HttpStatusCode.Unauthorized, "Security token is not valid");
 			}
 

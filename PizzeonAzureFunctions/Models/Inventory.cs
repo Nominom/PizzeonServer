@@ -8,8 +8,8 @@ namespace Pizzeon_server.Models {
 	public class Inventory {
 		[BsonId]
 		public Guid PlayerId { get; set; }
-		public List <string> OwnedColors;
-		public List <string> OwnedHats;
-		public List <string> OwnedAvatars;
+		public List <int> OwnedColors;
+		public List <int> OwnedHats;
+		public List <int> OwnedAvatars;
 	}
 }
