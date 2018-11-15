@@ -55,7 +55,7 @@ namespace PizzeonAzureFunctions.Functions
 			        avatar.Name = newAvatar.Name;
 			        avatar.Id = newAvatar.Id;
 			        avatar.Price = newAvatar.Price;
-			        avatar.Description = avatar.Description;
+			        avatar.Description = newAvatar.Description;
 					await MongoDbRepository.CreateAvatar(avatar);
 
 					return req.CreateResponse(HttpStatusCode.OK);
