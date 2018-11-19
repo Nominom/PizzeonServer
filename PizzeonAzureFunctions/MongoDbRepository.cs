@@ -5,12 +5,15 @@ using System.Runtime.Caching;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs.Host;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using Pizzeon_server.Models;
 
 namespace PizzeonAzureFunctions
 {
 	public static class MongoDbRepository {
+
+		public const int leaderboardsCacheMinutes = 5;
 
 		private static readonly MemoryCache Cache = MemoryCache.Default;
 
@@ -55,7 +58,6 @@ namespace PizzeonAzureFunctions
 			if (cursor.Any()) {
 				return false;
 			}
-
 			return true;
 		}
 
@@ -82,6 +84,7 @@ namespace PizzeonAzureFunctions
 			} else {
 				await AvatarCollection.ReplaceOneAsync(filter, avatar);
 			}
+			ClearCache();
 		}
 
 		public static async Task CreateColor(Color color) {
@@ -93,6 +96,7 @@ namespace PizzeonAzureFunctions
 			} else {
 				await ColorCollection.ReplaceOneAsync(filter, color);
 			}
+			ClearCache();
 		}
 
 		public static async Task CreateHat(Hat hat) {
@@ -104,6 +108,7 @@ namespace PizzeonAzureFunctions
 			} else {
 				await HatCollection.ReplaceOneAsync(filter, hat);
 			}
+			ClearCache();
 		}
 
 		public static async Task<Avatar[]> GetAllAvatars(TraceWriter log) {
@@ -315,7 +320,7 @@ namespace PizzeonAzureFunctions
 			IEnumerable<PlayerStatsView> topPlayers = Cache[cacheKey] as IEnumerable<PlayerStatsView>;
 			if (topPlayers == null) {
 				topPlayers = await DbGetTopPlayerStatsSingle(number, page);
-				Cache.Set(cacheKey, topPlayers, DateTimeOffset.Now.AddMinutes(30));
+				Cache.Set(cacheKey, topPlayers, DateTimeOffset.Now.AddMinutes(leaderboardsCacheMinutes));
 			}
 
 			return topPlayers;
@@ -349,7 +354,7 @@ namespace PizzeonAzureFunctions
 			IEnumerable<PlayerStatsView> topPlayers = Cache[cacheKey] as IEnumerable<PlayerStatsView>;
 			if (topPlayers == null) {
 				topPlayers = await DbGetTopPlayerStatsMulti(number, page);
-				Cache.Set(cacheKey, topPlayers, DateTimeOffset.Now.AddMinutes(30));
+				Cache.Set(cacheKey, topPlayers, DateTimeOffset.Now.AddMinutes(leaderboardsCacheMinutes));
 			}
 
 			return topPlayers;
@@ -387,6 +392,39 @@ namespace PizzeonAzureFunctions
 			var cursor = await TokenCollection.FindAsync(filter);
 			PlayerAuthorizationToken token = cursor.Single();
 			return token;
+		}
+
+		public static async Task RemoveFakeUsers() {
+			var filter = Builders<Player>.Filter.Regex("Username", "FakeUser[0-9]*");
+
+			var ids = (await PlayerCollection.Aggregate().Match(filter).Project(x => new {id = x.Id}).ToListAsync()).Select(x => x.id);
+
+			await PlayerCollection.DeleteManyAsync(filter);
+
+			var deletefilter = Builders<Inventory>.Filter.In("PlayerId", ids);
+			await InventoryCollection.DeleteManyAsync(deletefilter);
+			ClearCache();
+		}
+
+		public static async Task RemoveStrayInventories(TraceWriter log) {
+			var pIds = (await PlayerCollection.Find(Builders<Player>.Filter.Empty).Project(x=> new{id = x.Id}).ToListAsync()).Select(x => x.id);
+			var iIds = (await InventoryCollection.Find(Builders<Inventory>.Filter.Empty).Project(x => new { id = x.PlayerId }).ToListAsync()).Select(x => x.id);
+
+			var strays = iIds.Except(pIds).ToList();
+
+			foreach (Guid stray in strays) {
+				log.Info("Stray: "+stray.ToString());
+			}
+
+			var filter = Builders<Inventory>.Filter.In("PlayerId", strays);
+			await InventoryCollection.DeleteManyAsync(filter);
+		}
+
+		public static void ClearCache() {
+			List<string> cacheKeys = Cache.Select(kvp => kvp.Key).ToList();
+			foreach (string cacheKey in cacheKeys) {
+				Cache.Remove(cacheKey);
+			}
 		}
 	}
 }
