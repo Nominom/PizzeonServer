@@ -23,7 +23,8 @@ namespace PizzeonAzureFunctions.Functions
 		        .FirstOrDefault(q => string.Compare(q.Key, "page", true) == 0)
 		        .Value;
 
-	        if (!int.TryParse(numStr, out int number)) {
+
+			if (!int.TryParse(numStr, out int number)) {
 		        number = 10;
 	        }
 
@@ -31,8 +32,8 @@ namespace PizzeonAzureFunctions.Functions
 		        page = 0;
 	        }
 
-	        if (number > 100)
-		        return req.CreateResponse(HttpStatusCode.BadRequest, "number requested cannot be more than 100");
+	        if (number > 50)
+		        return req.CreateResponse(HttpStatusCode.BadRequest, "number requested cannot be more than 50");
 
 			switch (type) {
 				case ("single"):
