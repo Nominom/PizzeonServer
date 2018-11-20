@@ -13,6 +13,13 @@ namespace Pizzeon_server.Processors {
 			_repository = repository;
 		}
 
+		public IEnumerable<PlayerStatsView> GetAllPlayerStatsSingle() {
+			return this._repository.GetAllPlayerStatsSingle().Result;
+		}
+
+		public IEnumerable<PlayerStatsView> GetAllPlayerStatsMulti() {
+			return this._repository.GetAllPlayerStatsMulti().Result;
+		}
 
 		public IEnumerable<PlayerStatsView> GetTopPlayerStatsSingle(int number, int page) {
 			return _repository.GetTopPlayerStatsSingle(number, page).Result;

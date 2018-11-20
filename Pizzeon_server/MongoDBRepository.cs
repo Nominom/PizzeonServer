@@ -272,6 +272,25 @@ namespace Pizzeon_server {
 			await _playerCollection.UpdateOneAsync(filter, update);
 		}
 
+		public async Task<IEnumerable<PlayerStatsView>> GetAllPlayerStatsSingle() {
+			var sort = Builders<Player>.Sort.Descending(x => x.SingleStats.BestPoints);
+			var aggregate = _playerCollection.Aggregate()
+				.Sort(sort)
+				.Match(x => x.SingleStats.PlayedGames > 0)
+				.Project(x => new PlayerStatsView() {
+					Username = x.Username,
+					Pizzeria = x.Pizzeria,
+					Accuracy = x.SingleStats.Dropped == 0 ? 0 : (x.SingleStats.PinpointAccuracy / (float)x.SingleStats.Dropped),
+					AllPoints = x.SingleStats.AllPoints,
+					BestPoints = x.SingleStats.BestPoints,
+					Distance = x.SingleStats.Distance,
+					PizzasDelivered = x.SingleStats.Hits,
+					PlayedGames = x.SingleStats.PlayedGames,
+					PlayTime = x.SingleStats.OverallGameTime
+				});
+			return await aggregate.ToListAsync();
+		}
+
 		public async Task<IEnumerable<PlayerStatsView>> GetTopPlayerStatsSingle(int number, int page) {
 			var sort = Builders<Player>.Sort.Descending(x => x.SingleStats.BestPoints);
 			var aggregate = _playerCollection.Aggregate()
@@ -289,6 +308,25 @@ namespace Pizzeon_server {
 					PizzasDelivered = x.SingleStats.Hits,
 					PlayedGames = x.SingleStats.PlayedGames,
 					PlayTime = x.SingleStats.OverallGameTime
+				});
+			return await aggregate.ToListAsync();
+		}
+
+		public async Task<IEnumerable<PlayerStatsView>> GetAllPlayerStatsMulti() {
+			var sort = Builders<Player>.Sort.Descending(x => x.MultiStats.BestPoints);
+			var aggregate = _playerCollection.Aggregate()
+				.Sort(sort)
+				.Match(x => x.MultiStats.PlayedGames > 0)
+				.Project(x => new PlayerStatsView() {
+					Username = x.Username,
+					Pizzeria = x.Pizzeria,
+					Accuracy = x.MultiStats.PinpointAccuracy / x.MultiStats.Dropped,
+					AllPoints = x.MultiStats.AllPoints,
+					BestPoints = x.MultiStats.BestPoints,
+					Distance = x.MultiStats.Distance,
+					PizzasDelivered = x.MultiStats.Hits,
+					PlayedGames = x.MultiStats.PlayedGames,
+					PlayTime = x.MultiStats.OverallGameTime
 				});
 			return await aggregate.ToListAsync();
 		}

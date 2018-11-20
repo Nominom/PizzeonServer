@@ -42,7 +42,9 @@ namespace Pizzeon_server
 	    Task EquipHat(Guid playerId, string hatId);
 	    Task EquipAvatar (Guid playerId, string avatarId);
 	    Task EquipColor (Guid playerId, string colorId);
-	    Task<IEnumerable<PlayerStatsView>> GetTopPlayerStatsSingle (int number, int page);
+		Task<IEnumerable<PlayerStatsView>> GetAllPlayerStatsSingle();
+		Task<IEnumerable<PlayerStatsView>> GetAllPlayerStatsMulti();
+		Task<IEnumerable<PlayerStatsView>> GetTopPlayerStatsSingle (int number, int page);
 	    Task<IEnumerable<PlayerStatsView>> GetTopPlayerStatsMulti (int number, int page);
 	}
 }

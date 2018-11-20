@@ -18,6 +18,18 @@ namespace Pizzeon_server.Controllers {
 			_scoreboardProcessor = scoreboardProcessor;
 		}
 
+		//GET: api/scoreboard/allsingle
+		[HttpGet("allsingle")]
+		public IEnumerable<PlayerStatsView> GetAllSingle() {
+			return this._scoreboardProcessor.GetAllPlayerStatsSingle();
+		}
+
+		//GET: api/scoreboard/allmulti
+		[HttpGet("allmulti")]
+		public IEnumerable<PlayerStatsView> GetAllMulti() {
+			return this._scoreboardProcessor.GetAllPlayerStatsMulti();
+		}
+
 		// GET: api/scoreboard/single?number=10;page=0
 		[HttpGet("single")]
 		public IEnumerable<PlayerStatsView> GetSingle ([FromQuery] int? number, [FromQuery] int? page) {
