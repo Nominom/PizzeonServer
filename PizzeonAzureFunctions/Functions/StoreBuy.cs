@@ -42,7 +42,29 @@ namespace PizzeonAzureFunctions.Functions
 				        return req.CreateResponse(HttpStatusCode.NotFound);
 		        }
 
-		        Player player = await MongoDbRepository.GetPlayer(pId);
+
+				//Check if player has item already
+				switch (type) {
+					case ("hat"):
+						if (await MongoDbRepository.InventoryHasHat(pId, itemId)) {
+							return req.CreateResponse(HttpStatusCode.Forbidden, "Player already owns item!");
+						}
+						break;
+					case ("color"):
+						if (await MongoDbRepository.InventoryHasColor(pId, itemId)) {
+							return req.CreateResponse(HttpStatusCode.Forbidden, "Player already owns item!");
+						}
+						break;
+					case ("avatar"):
+						if (await MongoDbRepository.InventoryHasAvatar(pId, itemId)) {
+							return req.CreateResponse(HttpStatusCode.Forbidden, "Player already owns item!");
+						}
+						break;
+					default:
+						return req.CreateResponse(HttpStatusCode.NotFound);
+				}
+
+				Player player = await MongoDbRepository.GetPlayer(pId);
 		        if (player.Money >= price) {
 			        Task dTask = MongoDbRepository.DeductCoinFromPlayer(pId, price);
 			        Task aTask;

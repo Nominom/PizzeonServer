@@ -371,7 +371,7 @@ namespace PizzeonAzureFunctions
 				{
 					Username = x.Username,
 					Pizzeria = x.Pizzeria,
-					Accuracy = x.MultiStats.PinpointAccuracy / x.MultiStats.Dropped,
+					Accuracy = x.MultiStats.Dropped == 0 ? 0 : (x.MultiStats.PinpointAccuracy / (float)x.MultiStats.Dropped),
 					AllPoints = x.MultiStats.AllPoints,
 					BestPoints = x.MultiStats.BestPoints,
 					Distance = x.MultiStats.Distance,

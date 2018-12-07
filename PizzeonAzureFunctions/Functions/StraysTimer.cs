@@ -7,7 +7,7 @@ namespace PizzeonAzureFunctions.Functions
     public static class StraysTimer
     {
         [FunctionName("StraysTimer")]
-        public static void Run([TimerTrigger("0 0 0 * * *")]TimerInfo myTimer, TraceWriter log)
+        public static void Run([TimerTrigger("0 0 0 * * SUN")]TimerInfo myTimer, TraceWriter log)
         {
             log.Info($"C# Timer trigger function executed at: {DateTime.Now}");
 	        MongoDbRepository.RemoveStrayInventories(log).Wait();
